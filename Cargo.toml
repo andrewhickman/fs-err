@@ -1,0 +1,10 @@
+[package]
+name = "fs-err"
+version = "0.1.0"
+authors = ["Andrew Hickman <andrew.hickman1@sky.com>"]
+edition = "2018"
+
+[dependencies]
+
+[dev-dependencies]
+version-sync = "0.8.1"
