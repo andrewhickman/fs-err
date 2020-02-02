@@ -266,3 +266,9 @@ impl std::error::Error for Error {
         Some(self.source())
     }
 }
+
+#[test]
+fn open() {
+    let err = File::open("doesn't exist").unwrap_err();
+    assert_eq!(format!("{}", err), "failed to open file `doesn't exist`");
+}
