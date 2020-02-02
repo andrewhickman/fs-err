@@ -6,6 +6,7 @@
 #![deny(missing_debug_implementations, missing_docs)]
 
 use std::fmt;
+use std::io::{Read, Seek, Write};
 use std::path::{self, Path, PathBuf};
 
 /// A wrapper around a file handle and its path which wraps all
@@ -153,6 +154,90 @@ impl File {
     }
 }
 
+impl Read for File {
+    fn read(&mut self, buf: &mut [u8]) -> std::io::Result<usize> {
+        (&mut &*self).read(buf)
+    }
+
+    fn read_vectored(&mut self, bufs: &mut [std::io::IoSliceMut<'_>]) -> std::io::Result<usize> {
+        (&mut &*self).read_vectored(bufs)
+    }
+}
+
+impl<'a> Read for &'a File {
+    fn read(&mut self, buf: &mut [u8]) -> std::io::Result<usize> {
+        self.try_exec(
+            |mut file| file.read(buf),
+            |path| format!("failed to read from file `{}`", path),
+        )
+        .map_err(Error::into_io_error)
+    }
+
+    fn read_vectored(&mut self, bufs: &mut [std::io::IoSliceMut<'_>]) -> std::io::Result<usize> {
+        self.try_exec(
+            |mut file| file.read_vectored(bufs),
+            |path| format!("failed to read from file `{}`", path),
+        )
+        .map_err(Error::into_io_error)
+    }
+}
+
+impl Seek for File {
+    fn seek(&mut self, pos: std::io::SeekFrom) -> std::io::Result<u64> {
+        (&mut &*self).seek(pos)
+    }
+}
+
+impl<'a> Seek for &'a File {
+    fn seek(&mut self, pos: std::io::SeekFrom) -> std::io::Result<u64> {
+        self.try_exec(
+            |mut file| file.seek(pos),
+            |path| format!("failed to seek in file `{}`", path),
+        )
+        .map_err(Error::into_io_error)
+    }
+}
+
+impl Write for File {
+    fn write(&mut self, buf: &[u8]) -> std::io::Result<usize> {
+        (&mut &*self).write(buf)
+    }
+
+    fn write_vectored(&mut self, bufs: &[std::io::IoSlice<'_>]) -> std::io::Result<usize> {
+        (&mut &*self).write_vectored(bufs)
+    }
+
+    fn flush(&mut self) -> std::io::Result<()> {
+        (&mut &*self).flush()
+    }
+}
+
+impl<'a> Write for &'a File {
+    fn write(&mut self, buf: &[u8]) -> std::io::Result<usize> {
+        self.try_exec(
+            |mut file| file.write(buf),
+            |path| format!("failed to write to file `{}`", path),
+        )
+        .map_err(Error::into_io_error)
+    }
+
+    fn write_vectored(&mut self, bufs: &[std::io::IoSlice<'_>]) -> std::io::Result<usize> {
+        self.try_exec(
+            |mut file| file.write_vectored(bufs),
+            |path| format!("failed to write to file `{}`", path),
+        )
+        .map_err(Error::into_io_error)
+    }
+
+    fn flush(&mut self) -> std::io::Result<()> {
+        self.try_exec(
+            |mut file| file.flush(),
+            |path| format!("failed to flush file `{}`", path),
+        )
+        .map_err(Error::into_io_error)
+    }
+}
+
 impl Error {
     /// Constructs an [`Error`](struct.Error.html).
     pub fn new(source: std::io::Error, message: String) -> Self {
@@ -162,6 +247,11 @@ impl Error {
     /// Gets a reference to the raw error.
     pub fn source(&self) -> &std::io::Error {
         &self.source
+    }
+
+    /// Convert into an `io::Error`.
+    pub fn into_io_error(self) -> std::io::Error {
+        std::io::Error::new(self.source.kind(), self)
     }
 }
 
