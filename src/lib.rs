@@ -255,6 +255,12 @@ impl Error {
     }
 }
 
+impl From<Error> for std::io::Error {
+    fn from(err: Error) -> std::io::Error {
+        err.into_io_error()
+    }
+}
+
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         self.message.fmt(f)
@@ -265,6 +271,37 @@ impl std::error::Error for Error {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         Some(self.source())
     }
+}
+
+fn initial_buffer_size(file: &File) -> usize {
+    file.file()
+        .metadata()
+        .map(|m| m.len() as usize + 1)
+        .unwrap_or(0)
+}
+
+/// Wrapper for [`fs::read`](https://doc.rust-lang.org/stable/std/fs/fn.read.html).
+pub fn read<P: AsRef<Path> + Into<PathBuf>>(path: P) -> std::io::Result<Vec<u8>> {
+    let mut file = File::open(path)?;
+    let mut bytes = Vec::with_capacity(initial_buffer_size(&file));
+    file.read_to_end(&mut bytes)?;
+    Ok(bytes)
+}
+
+/// Wrapper for [`fs::read_to_string`](https://doc.rust-lang.org/stable/std/fs/fn.read_to_string.html).
+pub fn read_to_string<P: AsRef<Path> + Into<PathBuf>>(path: P) -> std::io::Result<String> {
+    let mut file = File::open(path)?;
+    let mut string = String::with_capacity(initial_buffer_size(&file));
+    file.read_to_string(&mut string)?;
+    Ok(string)
+}
+
+/// Wrapper for [`fs::write`](https://doc.rust-lang.org/stable/std/fs/fn.write.html).
+pub fn write<P: AsRef<Path> + Into<PathBuf>, C: AsRef<[u8]>>(
+    path: P,
+    contents: C,
+) -> std::io::Result<()> {
+    File::create(path)?.write_all(contents.as_ref())
 }
 
 #[test]
