@@ -2,7 +2,7 @@
 //! around a file handle and its path which wraps all operations with
 //! more helpful error messages.
 
-#![doc(html_root_url = "https://docs.rs/fs-err/0.1.1")]
+#![doc(html_root_url = "https://docs.rs/fs-err/0.1.2")]
 #![deny(missing_debug_implementations, missing_docs)]
 
 use std::fmt;
