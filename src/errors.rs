@@ -32,49 +32,10 @@ impl fmt::Display for Error {
 }
 
 impl StdError for Error {
-    fn source(&self) -> Option<&(dyn StdError + 'static)> {
-        Some(&self.source)
+    fn cause(&self) -> Option<&dyn StdError> {
+        self.source()
     }
-}
 
-/// Contains an IO error from a copy operation, containing both paths.
-#[derive(Debug)]
-pub(crate) struct CopyError {
-    source: io::Error,
-    source_path: PathBuf,
-    dest_path: PathBuf,
-}
-
-impl CopyError {
-    pub fn new<P: Into<PathBuf>, Q: Into<PathBuf>>(
-        source: io::Error,
-        source_path: P,
-        dest_path: Q,
-    ) -> io::Error {
-        io::Error::new(
-            source.kind(),
-            Self {
-                source,
-                source_path: source_path.into(),
-                dest_path: dest_path.into(),
-            },
-        )
-    }
-}
-
-impl fmt::Display for CopyError {
-    fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            formatter,
-            "{} copying path {} to {}",
-            self.source,
-            self.source_path.display(),
-            self.dest_path.display()
-        )
-    }
-}
-
-impl StdError for CopyError {
     fn source(&self) -> Option<&(dyn StdError + 'static)> {
         Some(&self.source)
     }
