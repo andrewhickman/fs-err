@@ -7,6 +7,7 @@
 
 mod errors;
 
+use std::fs;
 use std::io::{self, Read, Seek, Write};
 use std::path::{Path, PathBuf};
 
@@ -16,7 +17,7 @@ use errors::Error;
 /// operations with more helpful error messages.
 #[derive(Debug)]
 pub struct File {
-    file: std::fs::File,
+    file: fs::File,
     path: PathBuf,
 }
 
@@ -26,7 +27,7 @@ impl File {
     where
         P: AsRef<Path> + Into<PathBuf>,
     {
-        match std::fs::File::open(path.as_ref()) {
+        match fs::File::open(path.as_ref()) {
             Ok(file) => Ok(File::from_parts(file, path.into())),
             Err(source) => Err(Error::new(source, path)),
         }
@@ -37,14 +38,14 @@ impl File {
     where
         P: AsRef<Path> + Into<PathBuf>,
     {
-        match std::fs::File::create(path.as_ref()) {
+        match fs::File::create(path.as_ref()) {
             Ok(file) => Ok(File::from_parts(file, path.into())),
             Err(source) => Err(Error::new(source, path)),
         }
     }
 
     /// Wrapper for [`OpenOptions::open`](https://doc.rust-lang.org/stable/std/fs/struct.OpenOptions.html#method.open).
-    pub fn from_options<P>(path: P, options: &std::fs::OpenOptions) -> Result<Self, io::Error>
+    pub fn from_options<P>(path: P, options: &fs::OpenOptions) -> Result<Self, io::Error>
     where
         P: AsRef<Path> + Into<PathBuf>,
     {
@@ -76,7 +77,7 @@ impl File {
     }
 
     /// Wrapper for [`File::metadata`](https://doc.rust-lang.org/stable/std/fs/struct.File.html#method.metadata).
-    pub fn metadata(&self) -> Result<std::fs::Metadata, io::Error> {
+    pub fn metadata(&self) -> Result<fs::Metadata, io::Error> {
         self.file
             .metadata()
             .map_err(|source| Error::new(source, &self.path))
@@ -94,7 +95,7 @@ impl File {
     }
 
     /// Wrapper for [`File::set_permissions`](https://doc.rust-lang.org/stable/std/fs/struct.File.html#method.set_permissions).
-    pub fn set_permissions(&self, perm: std::fs::Permissions) -> Result<(), io::Error> {
+    pub fn set_permissions(&self, perm: fs::Permissions) -> Result<(), io::Error> {
         self.file
             .set_permissions(perm)
             .map_err(|source| Error::new(source, &self.path))
@@ -102,7 +103,7 @@ impl File {
 
     /// Creates a [`File`](struct.File.html) from a raw file and its
     /// path.
-    pub fn from_parts<P>(file: std::fs::File, path: P) -> Self
+    pub fn from_parts<P>(file: fs::File, path: P) -> Self
     where
         P: Into<PathBuf>,
     {
@@ -113,7 +114,7 @@ impl File {
     }
 
     /// Gets the wrapped file.
-    pub fn file(&self) -> &std::fs::File {
+    pub fn file(&self) -> &fs::File {
         &self.file
     }
 
@@ -209,12 +210,12 @@ impl<'a> Write for &'a File {
 
 /// Wrapper for [`fs::read`](https://doc.rust-lang.org/stable/std/fs/fn.read.html).
 pub fn read<P: AsRef<Path> + Into<PathBuf>>(path: P) -> std::io::Result<Vec<u8>> {
-    std::fs::read(path.as_ref()).map_err(|source| Error::new(source, path))
+    fs::read(path.as_ref()).map_err(|source| Error::new(source, path))
 }
 
 /// Wrapper for [`fs::read_to_string`](https://doc.rust-lang.org/stable/std/fs/fn.read_to_string.html).
 pub fn read_to_string<P: AsRef<Path> + Into<PathBuf>>(path: P) -> std::io::Result<String> {
-    std::fs::read_to_string(path.as_ref()).map_err(|source| Error::new(source, path))
+    fs::read_to_string(path.as_ref()).map_err(|source| Error::new(source, path))
 }
 
 /// Wrapper for [`fs::write`](https://doc.rust-lang.org/stable/std/fs/fn.write.html).
@@ -222,11 +223,5 @@ pub fn write<P: AsRef<Path> + Into<PathBuf>, C: AsRef<[u8]>>(
     path: P,
     contents: C,
 ) -> std::io::Result<()> {
-    std::fs::write(path.as_ref(), contents).map_err(|source| Error::new(source, path))
-}
-
-#[test]
-fn open() {
-    let err = File::open("doesn't exist").unwrap_err();
-    assert_eq!(format!("{}", err), "failed to open file `doesn't exist`");
+    fs::write(path.as_ref(), contents).map_err(|source| Error::new(source, path))
 }
