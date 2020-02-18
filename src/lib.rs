@@ -5,6 +5,8 @@
 #![doc(html_root_url = "https://docs.rs/fs-err/1.0.1")]
 #![deny(missing_debug_implementations, missing_docs)]
 
+mod errors;
+
 use std::fmt;
 use std::io::{Read, Seek, Write};
 use std::path::{self, Path, PathBuf};
