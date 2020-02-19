@@ -2,7 +2,7 @@
 //! around a file handle and its path which wraps all operations with
 //! more helpful error messages.
 
-#![doc(html_root_url = "https://docs.rs/fs-err/1.0.1")]
+#![doc(html_root_url = "https://docs.rs/fs-err/2.0.0")]
 #![deny(missing_debug_implementations, missing_docs)]
 
 mod errors;
