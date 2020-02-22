@@ -11,7 +11,7 @@ use std::fs;
 use std::io::{self, Read, Seek, Write};
 use std::path::{Path, PathBuf};
 
-use errors::{Error, ErrorKind};
+use errors::{CopyError, Error, ErrorKind};
 
 /// A wrapper around a file handle and its path which wraps all
 /// operations with more helpful error messages.
@@ -242,4 +242,13 @@ pub fn write<P: AsRef<Path> + Into<PathBuf>, C: AsRef<[u8]>>(
     contents: C,
 ) -> io::Result<()> {
     File::create(path)?.write_all(contents.as_ref())
+}
+
+/// Wrapper for [`fs::copy`](https://doc.rust-lang.org/stable/std/fs/fn.copy.html).
+pub fn copy<P, Q>(from: P, to: Q) -> io::Result<u64>
+where
+    P: AsRef<Path> + Into<PathBuf>,
+    Q: AsRef<Path> + Into<PathBuf>,
+{
+    fs::copy(from.as_ref(), to.as_ref()).map_err(|source| CopyError::new(source, from, to))
 }

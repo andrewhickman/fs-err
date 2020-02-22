@@ -73,3 +73,45 @@ impl StdError for Error {
         Some(&self.source)
     }
 }
+
+/// Error type used by `fs::copy` that holds two paths.
+#[derive(Debug)]
+pub(crate) struct CopyError {
+    source: io::Error,
+    from_path: PathBuf,
+    to_path: PathBuf,
+}
+
+impl CopyError {
+    pub fn new<P: Into<PathBuf>, Q: Into<PathBuf>>(source: io::Error, from: P, to: Q) -> io::Error {
+        io::Error::new(
+            source.kind(),
+            Self {
+                source,
+                from_path: from.into(),
+                to_path: to.into(),
+            },
+        )
+    }
+}
+
+impl fmt::Display for CopyError {
+    fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+        write!(
+            formatter,
+            "failed to copy file from {} to {}",
+            self.from_path.display(),
+            self.to_path.display()
+        )
+    }
+}
+
+impl StdError for CopyError {
+    fn cause(&self) -> Option<&dyn StdError> {
+        self.source()
+    }
+
+    fn source(&self) -> Option<&(dyn StdError + 'static)> {
+        Some(&self.source)
+    }
+}
