@@ -1,6 +1,6 @@
 [package]
 name = "fs-err"
-description = "A simple wrapper around filesystem operations to provide more helpful error messages."
+description = "A drop-in replacement for std::fs with more helpful error messages."
 version = "2.0.1"
 authors = ["Andrew Hickman <andrew.hickman1@sky.com>"]
 edition = "2018"
@@ -14,3 +14,4 @@ readme = "README.md"
 
 [dev-dependencies]
 version-sync = "0.8.1"
+serde_json = "1.0.48"
