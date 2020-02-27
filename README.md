@@ -13,9 +13,30 @@ fs-err is a drop-in replacement for [`std::fs`][std::fs] that provides more
 helpful messages on errors. Extra information includes which operations was
 attmpted and any involved paths.
 
-## Basic Usage
+## Error Messages
 
-fs-err's API is the same as [`std::fs`], so migrating code to use it is easy.
+Using [`std::fs`][std::fs], if this code fails:
+
+```rust
+let file = File::open("does not exist.txt")?;
+```
+
+The error message that Rust gives you isn't very useful:
+
+```txt
+The system cannot find the file specified. (os error 2)
+```
+
+...but if we use fs-err instead, our error contains more actionable information:
+
+```txt
+failed to open file `does not exist.txt`
+    caused by: The system cannot find the file specified. (os error 2)
+```
+
+## Usage
+
+fs-err's API is the same as [`std::fs`][std::fs], so migrating code to use it is easy.
 
 ```rust
 // use std::fs;
