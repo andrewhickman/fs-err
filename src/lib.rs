@@ -69,6 +69,7 @@ println!("Program config: {:?}", decoded);
 #![doc(html_root_url = "https://docs.rs/fs-err/2.0.1")]
 #![deny(missing_debug_implementations, missing_docs)]
 
+mod dir;
 mod errors;
 mod file;
 
@@ -78,6 +79,7 @@ use std::path::{Path, PathBuf};
 
 use errors::CopyError;
 
+pub use dir::*;
 pub use file::*;
 
 /// Wrapper for [`fs::read`](https://doc.rust-lang.org/stable/std/fs/fn.read.html).

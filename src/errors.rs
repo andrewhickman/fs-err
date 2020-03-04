@@ -16,6 +16,7 @@ pub(crate) enum ErrorKind {
     Seek,
     Write,
     Flush,
+    ReadDir,
 }
 
 /// Contains an IO error that has a file path attached.
@@ -60,6 +61,7 @@ impl fmt::Display for Error {
             Seek => write!(formatter, "failed to seek in file `{}`", path),
             Write => write!(formatter, "failed to write to file `{}`", path),
             Flush => write!(formatter, "failed to flush file `{}`", path),
+            ReadDir => write!(formatter, "failed to read directory `{}`", path),
         }
     }
 }
