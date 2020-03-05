@@ -1,5 +1,8 @@
 # fs-err Changelog
 
+## Unreleased Changes
+* Added `metadata`. ([#15](https://github.com/andrewhickman/fs-err/pull/15))
+
 ## 2.1.0
 * Updated crate-level documentation. ([#8](https://github.com/andrewhickman/fs-err/pull/8))
 * Added `read_dir`, `ReadDir`, and `DirEntry`. ([#9](https://github.com/andrewhickman/fs-err/pull/9))
