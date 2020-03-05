@@ -115,6 +115,31 @@ where
     fs::copy(from.as_ref(), to.as_ref()).map_err(|source| CopyError::new(source, from, to))
 }
 
+/// Wrapper for [`fs::remove_dir`](https://doc.rust-lang.org/stable/std/fs/fn.remove_dir.html).
+pub fn remove_dir<P>(path: P) -> io::Result<()>
+where
+    P: AsRef<Path> + Into<PathBuf>,
+{
+    fs::remove_dir(path.as_ref()).map_err(|source| Error::new(source, ErrorKind::RemoveDir, path))
+}
+
+/// Wrapper for [`fs::remove_dir_all`](https://doc.rust-lang.org/stable/std/fs/fn.remove_dir_all.html).
+pub fn remove_dir_all<P>(path: P) -> io::Result<()>
+where
+    P: AsRef<Path> + Into<PathBuf>,
+{
+    fs::remove_dir_all(path.as_ref())
+        .map_err(|source| Error::new(source, ErrorKind::RemoveDir, path))
+}
+
+/// Wrapper for [`fs::remove_file`](https://doc.rust-lang.org/stable/std/fs/fn.remove_file.html).
+pub fn remove_file<P>(path: P) -> io::Result<()>
+where
+    P: AsRef<Path> + Into<PathBuf>,
+{
+    fs::remove_file(path.as_ref()).map_err(|source| Error::new(source, ErrorKind::RemoveFile, path))
+}
+
 /// Wrapper for [`fs::metadata`](https://doc.rust-lang.org/stable/std/fs/fn.metadata.html).
 pub fn metadata<P: AsRef<Path> + Into<PathBuf>>(path: P) -> io::Result<fs::Metadata> {
     fs::metadata(path.as_ref()).map_err(|source| Error::new(source, ErrorKind::Metadata, path))
