@@ -1,6 +1,6 @@
 # fs-err Changelog
 
-## Unreleased Changes
+## 2.2.0
 * Added `metadata`. ([#15](https://github.com/andrewhickman/fs-err/pull/15))
 
 ## 2.1.0
