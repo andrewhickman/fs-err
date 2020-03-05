@@ -77,7 +77,7 @@ use std::fs;
 use std::io::{self, Read, Write};
 use std::path::{Path, PathBuf};
 
-use errors::CopyError;
+use errors::{CopyError, Error, ErrorKind};
 
 pub use dir::*;
 pub use file::*;
@@ -113,6 +113,11 @@ where
     Q: AsRef<Path> + Into<PathBuf>,
 {
     fs::copy(from.as_ref(), to.as_ref()).map_err(|source| CopyError::new(source, from, to))
+}
+
+/// Wrapper for [`fs::metadata`](https://doc.rust-lang.org/stable/std/fs/fn.metadata.html).
+pub fn metadata<P: AsRef<Path> + Into<PathBuf>>(path: P) -> io::Result<fs::Metadata> {
+    fs::metadata(path.as_ref()).map_err(|source| Error::new(source, ErrorKind::Metadata, path))
 }
 
 fn initial_buffer_size(file: &File) -> usize {
