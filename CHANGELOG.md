@@ -1,5 +1,8 @@
 # fs-err Changelog
 
+## Unreleased
+* Added `remove_file`, `remove_dir`, and `remove_dir_all`. ([#16](https://github.com/andrewhickman/fs-err/pull/16))
+
 ## 2.2.0
 * Added `metadata`. ([#15](https://github.com/andrewhickman/fs-err/pull/15))
 
