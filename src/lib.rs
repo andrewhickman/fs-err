@@ -115,6 +115,23 @@ where
     fs::copy(from.as_ref(), to.as_ref()).map_err(|source| CopyError::new(source, from, to))
 }
 
+/// Wrapper for [`fs::create_dir`](https://doc.rust-lang.org/stable/std/fs/fn.create_dir.html).
+pub fn create_dir<P>(path: P) -> io::Result<()>
+where
+    P: AsRef<Path> + Into<PathBuf>,
+{
+    fs::create_dir(path.as_ref()).map_err(|source| Error::new(source, ErrorKind::CreateDir, path))
+}
+
+/// Wrapper for [`fs::create_dir_all`](https://doc.rust-lang.org/stable/std/fs/fn.create_dir_all.html).
+pub fn create_dir_all<P>(path: P) -> io::Result<()>
+where
+    P: AsRef<Path> + Into<PathBuf>,
+{
+    fs::create_dir_all(path.as_ref())
+        .map_err(|source| Error::new(source, ErrorKind::CreateDir, path))
+}
+
 /// Wrapper for [`fs::remove_dir`](https://doc.rust-lang.org/stable/std/fs/fn.remove_dir.html).
 pub fn remove_dir<P>(path: P) -> io::Result<()>
 where
