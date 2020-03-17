@@ -1,6 +1,6 @@
 # fs-err Changelog
 
-## Unreleased
+## 2.3.0
 * Added `create_dir` and `create_dir_all`. ([#19](https://github.com/andrewhickman/fs-err/pull/19))
 * Added `remove_file`, `remove_dir`, and `remove_dir_all`. ([#16](https://github.com/andrewhickman/fs-err/pull/16))
 
