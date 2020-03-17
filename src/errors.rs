@@ -7,6 +7,7 @@ use std::path::PathBuf;
 pub(crate) enum ErrorKind {
     OpenFile,
     CreateFile,
+    CreateDir,
     SyncFile,
     SetLen,
     Metadata,
@@ -54,6 +55,7 @@ impl fmt::Display for Error {
         match self.kind {
             OpenFile => write!(formatter, "failed to open file `{}`", path),
             CreateFile => write!(formatter, "failed to create file `{}`", path),
+            CreateDir => write!(formatter, "failed to create directory `{}`", path),
             SyncFile => write!(formatter, "failed to sync file `{}`", path),
             SetLen => write!(formatter, "failed to set length of file `{}`", path),
             Metadata => write!(formatter, "failed to query metadata of file `{}`", path),
