@@ -11,12 +11,13 @@ on:
 
 jobs:
   build:
-
-    runs-on: ubuntu-latest
-
     strategy:
+      fail-fast: false
       matrix:
+        os: [ubuntu-latest, windows-latest]
         rust_version: [stable, "1.39.0"]
+
+    runs-on: ${{ matrix.os }}
 
     steps:
     - uses: actions/checkout@v1
