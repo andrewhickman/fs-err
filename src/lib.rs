@@ -128,12 +128,8 @@ pub fn remove_dir_all<P>(path: P) -> io::Result<()>
 where
     P: AsRef<Path> + Into<PathBuf>,
 {
-    let filetype = symlink_metadata(path.as_ref())?.file_type();
-    if filetype.is_symlink() {
-        remove_file(path)
-    } else {
-        remove_dir_all_recursive(path)
-    }
+    fs::remove_dir_all(path.as_ref())
+        .map_err(|source| Error::new(source, ErrorKind::RemoveDir, path))
 }
 
 /// Wrapper for [`fs::remove_file`](https://doc.rust-lang.org/stable/std/fs/fn.remove_file.html).
@@ -149,49 +145,9 @@ pub fn metadata<P: AsRef<Path> + Into<PathBuf>>(path: P) -> io::Result<fs::Metad
     fs::metadata(path.as_ref()).map_err(|source| Error::new(source, ErrorKind::Metadata, path))
 }
 
-/// Wrapper for [`fs::symlink_metadata`](https://doc.rust-lang.org/stable/std/fs/fn.symlink_metadata.html).
-pub fn symlink_metadata<P: AsRef<Path> + Into<PathBuf>>(path: P) -> io::Result<fs::Metadata> {
-    fs::symlink_metadata(path.as_ref())
-        .map_err(|source| Error::new(source, ErrorKind::Metadata, path))
-}
-
 fn initial_buffer_size(file: &File) -> usize {
     file.file()
         .metadata()
         .map(|m| m.len() as usize + 1)
         .unwrap_or(0)
-}
-
-#[cfg(not(windows))]
-fn remove_dir_all_recursive<P>(path: P) -> io::Result<()>
-where
-    P: AsRef<Path> + Into<PathBuf>,
-{
-    for child in read_dir(path.as_ref())? {
-        let child = child?;
-        if child.file_type()?.is_dir() {
-            remove_dir_all_recursive(child.path())?;
-        } else {
-            remove_file(child.path())?;
-        }
-    }
-    remove_dir(path)
-}
-
-#[cfg(windows)]
-fn remove_dir_all_recursive(path: &Path) -> io::Result<()> {
-    use std::os::windows::fs::FileTypeExt;
-
-    for child in read_dir(path)? {
-        let child = child?;
-        let child_type = child.file_type()?;
-        if child_type.is_dir() {
-            remove_dir_all_recursive(&child.path())?;
-        } else if child_type.is_symlink_dir() {
-            remove_dir(&child.path())?;
-        } else {
-            unlink(&child.path())?;
-        }
-    }
-    rmdir(path)
 }
