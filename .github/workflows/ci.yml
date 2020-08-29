@@ -36,3 +36,18 @@ jobs:
         cargo fmt -- --check
         cargo clippy
       if: matrix.rust_version == 'stable'
+
+  publish:
+    # Publishing goes when we create a new git tag on the repo
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    # XXX: this job must execute only if all checks pass!
+    needs:
+      - build
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          profile: minimal
+      - run: cargo publish --token ${{ secrets.CRATES_TOKEN }})
