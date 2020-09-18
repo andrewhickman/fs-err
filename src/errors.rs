@@ -20,6 +20,9 @@ pub(crate) enum ErrorKind {
     ReadDir,
     RemoveFile,
     RemoveDir,
+    Canonicalize,
+    ReadLink,
+    SymlinkMetadata,
 }
 
 /// Contains an IO error that has a file path attached.
@@ -68,6 +71,9 @@ impl fmt::Display for Error {
             ReadDir => write!(formatter, "failed to read directory `{}`", path),
             RemoveFile => write!(formatter, "failed to remove file `{}`", path),
             RemoveDir => write!(formatter, "failed to remove directory `{}`", path),
+            Canonicalize => write!(formatter, "failed to canonicalize path `{}`", path),
+            ReadLink => write!(formatter, "failed to read symbolic link `{}`", path),
+            SymlinkMetadata => write!(formatter, "failed to query metadata of symlink `{}`", path),
         }
     }
 }
@@ -82,20 +88,35 @@ impl StdError for Error {
     }
 }
 
-/// Error type used by `fs::copy` that holds two paths.
+#[derive(Debug, Clone, Copy)]
+pub(crate) enum SourceDestErrorKind {
+    Copy,
+    HardLink,
+    Rename,
+    SoftLink,
+}
+
+/// Error type used by functions like `fs::copy` that holds two paths.
 #[derive(Debug)]
-pub(crate) struct CopyError {
+pub(crate) struct SourceDestError {
+    kind: SourceDestErrorKind,
     source: io::Error,
     from_path: PathBuf,
     to_path: PathBuf,
 }
 
-impl CopyError {
-    pub fn new<P: Into<PathBuf>, Q: Into<PathBuf>>(source: io::Error, from: P, to: Q) -> io::Error {
+impl SourceDestError {
+    pub fn new<P: Into<PathBuf>, Q: Into<PathBuf>>(
+        source: io::Error,
+        kind: SourceDestErrorKind,
+        from: P,
+        to: Q,
+    ) -> io::Error {
         io::Error::new(
             source.kind(),
             Self {
                 source,
+                kind,
                 from_path: from.into(),
                 to_path: to.into(),
             },
@@ -103,18 +124,28 @@ impl CopyError {
     }
 }
 
-impl fmt::Display for CopyError {
+impl fmt::Display for SourceDestError {
     fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            formatter,
-            "failed to copy file from {} to {}",
-            self.from_path.display(),
-            self.to_path.display()
-        )
+        let from = self.from_path.display();
+        let to = self.to_path.display();
+        match self.kind {
+            SourceDestErrorKind::Copy => {
+                write!(formatter, "failed to copy file from {} to {}", from, to)
+            }
+            SourceDestErrorKind::HardLink => {
+                write!(formatter, "failed to hardlink file from {} to {}", from, to)
+            }
+            SourceDestErrorKind::Rename => {
+                write!(formatter, "failed to rename file from {} to {}", from, to)
+            }
+            SourceDestErrorKind::SoftLink => {
+                write!(formatter, "failed to softlink file from {} to {}", from, to)
+            }
+        }
     }
 }
 
-impl StdError for CopyError {
+impl StdError for SourceDestError {
     fn cause(&self) -> Option<&dyn StdError> {
         self.source()
     }
