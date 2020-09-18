@@ -77,7 +77,7 @@ use std::fs;
 use std::io::{self, Read, Write};
 use std::path::{Path, PathBuf};
 
-use errors::{CopyError, Error, ErrorKind};
+use errors::{Error, ErrorKind, SourceDestError, SourceDestErrorKind};
 
 pub use dir::*;
 pub use file::*;
@@ -112,7 +112,8 @@ where
     P: AsRef<Path> + Into<PathBuf>,
     Q: AsRef<Path> + Into<PathBuf>,
 {
-    fs::copy(from.as_ref(), to.as_ref()).map_err(|source| CopyError::new(source, from, to))
+    fs::copy(from.as_ref(), to.as_ref())
+        .map_err(|source| SourceDestError::new(source, SourceDestErrorKind::Copy, from, to))
 }
 
 /// Wrapper for [`fs::create_dir`](https://doc.rust-lang.org/stable/std/fs/fn.create_dir.html).
@@ -160,6 +161,53 @@ where
 /// Wrapper for [`fs::metadata`](https://doc.rust-lang.org/stable/std/fs/fn.metadata.html).
 pub fn metadata<P: AsRef<Path> + Into<PathBuf>>(path: P) -> io::Result<fs::Metadata> {
     fs::metadata(path.as_ref()).map_err(|source| Error::new(source, ErrorKind::Metadata, path))
+}
+
+/// Wrapper for [`fs::canonicalize`](https://doc.rust-lang.org/stable/std/fs/fn.canonicalize.html).
+pub fn canonicalize<P: AsRef<Path> + Into<PathBuf>>(path: P) -> io::Result<PathBuf> {
+    fs::canonicalize(path.as_ref())
+        .map_err(|source| Error::new(source, ErrorKind::Canonicalize, path))
+}
+
+/// Wrapper for [`fs::hard_link`](https://doc.rust-lang.org/stable/std/fs/fn.hard_link.html).
+pub fn hard_link<P: AsRef<Path> + Into<PathBuf>, Q: AsRef<Path> + Into<PathBuf>>(
+    src: P,
+    dst: Q,
+) -> io::Result<()> {
+    fs::hard_link(src.as_ref(), dst.as_ref())
+        .map_err(|source| SourceDestError::new(source, SourceDestErrorKind::HardLink, src, dst))
+}
+
+/// Wrapper for [`fs::read_link`](https://doc.rust-lang.org/stable/std/fs/fn.read_link.html).
+pub fn read_link<P: AsRef<Path> + Into<PathBuf>>(path: P) -> io::Result<PathBuf> {
+    fs::read_link(path.as_ref()).map_err(|source| Error::new(source, ErrorKind::ReadLink, path))
+}
+
+/// Wrapper for [`fs::rename`](https://doc.rust-lang.org/stable/std/fs/fn.rename.html).
+pub fn rename<P: AsRef<Path> + Into<PathBuf>, Q: AsRef<Path> + Into<PathBuf>>(
+    from: P,
+    to: Q,
+) -> io::Result<()> {
+    fs::rename(from.as_ref(), to.as_ref())
+        .map_err(|source| SourceDestError::new(source, SourceDestErrorKind::Rename, from, to))
+}
+
+/// Wrapper for [`fs::soft_link`](https://doc.rust-lang.org/stable/std/fs/fn.soft_link.html).
+#[deprecated = "replaced with std::os::unix::fs::symlink and \
+std::os::windows::fs::{symlink_file, symlink_dir}"]
+pub fn soft_link<P: AsRef<Path> + Into<PathBuf>, Q: AsRef<Path> + Into<PathBuf>>(
+    src: P,
+    dst: Q,
+) -> io::Result<()> {
+    #[allow(deprecated)]
+    fs::soft_link(src.as_ref(), dst.as_ref())
+        .map_err(|source| SourceDestError::new(source, SourceDestErrorKind::SoftLink, src, dst))
+}
+
+/// Wrapper for [`fs::symlink_metadata`](https://doc.rust-lang.org/stable/std/fs/fn.symlink_metadata.html).
+pub fn symlink_metadata<P: AsRef<Path> + Into<PathBuf>>(path: P) -> io::Result<fs::Metadata> {
+    fs::symlink_metadata(path.as_ref())
+        .map_err(|source| Error::new(source, ErrorKind::SymlinkMetadata, path))
 }
 
 fn initial_buffer_size(file: &File) -> usize {
