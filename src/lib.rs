@@ -210,6 +210,15 @@ pub fn symlink_metadata<P: AsRef<Path> + Into<PathBuf>>(path: P) -> io::Result<f
         .map_err(|source| Error::new(source, ErrorKind::SymlinkMetadata, path))
 }
 
+/// Wrapper for [`fs::set_permissions`](https://doc.rust-lang.org/stable/std/fs/fn.set_permissions.html).
+pub fn set_permissions<P: AsRef<Path> + Into<PathBuf>>(
+    path: P,
+    perm: fs::Permissions,
+) -> io::Result<()> {
+    fs::set_permissions(path.as_ref(), perm)
+        .map_err(|source| Error::new(source, ErrorKind::SetPermissions, path))
+}
+
 fn initial_buffer_size(file: &File) -> usize {
     file.file()
         .metadata()
