@@ -43,7 +43,7 @@ impl File {
     /// Wrapper for [`OpenOptions::open`](https://doc.rust-lang.org/stable/std/fs/struct.OpenOptions.html#method.open).
     ///
     /// This takes [`&std::fs::OpenOptions`](https://doc.rust-lang.org/stable/std/fs/struct.OpenOptions.html),
-    /// not [`fs_err::OpenOptions`].
+    /// not [`crate::OpenOptions`].
     #[deprecated = "use fs_err::OpenOptions::open instead"]
     pub fn from_options<P>(path: P, options: &fs::OpenOptions) -> Result<Self, io::Error>
     where
