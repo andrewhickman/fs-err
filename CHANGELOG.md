@@ -1,5 +1,11 @@
 # fs-err Changelog
 
+## 2.4.0
+* Added `canonicalize`, `hard link`, `read_link`, `rename`, `symlink_metadata` and `soft_link`. ([#25](https://github.com/andrewhickman/fs-err/pull/25))
+* Added aliases to `std::path::Path` via extension trait ([#26](https://github.com/andrewhickman/fs-err/pull/26))
+* Added `OpenOptions` ([#27](https://github.com/andrewhickman/fs-err/pull/27))
+* Added `set_permissions` ([#28](https://github.com/andrewhickman/fs-err/pull/28))
+
 ## 2.3.0
 * Added `create_dir` and `create_dir_all`. ([#19](https://github.com/andrewhickman/fs-err/pull/19))
 * Added `remove_file`, `remove_dir`, and `remove_dir_all`. ([#16](https://github.com/andrewhickman/fs-err/pull/16))
