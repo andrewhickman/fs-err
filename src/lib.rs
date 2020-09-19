@@ -72,6 +72,7 @@ println!("Program config: {:?}", decoded);
 mod dir;
 mod errors;
 mod file;
+mod open_options;
 mod path;
 
 use std::fs;
@@ -82,6 +83,7 @@ use errors::{Error, ErrorKind, SourceDestError, SourceDestErrorKind};
 
 pub use dir::*;
 pub use file::*;
+pub use open_options::OpenOptions;
 pub use path::PathExt;
 
 /// Wrapper for [`fs::read`](https://doc.rust-lang.org/stable/std/fs/fn.read.html).
