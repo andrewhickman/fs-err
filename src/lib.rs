@@ -73,6 +73,7 @@ mod dir;
 mod errors;
 mod file;
 mod open_options;
+mod path;
 
 use std::fs;
 use std::io::{self, Read, Write};
@@ -83,6 +84,7 @@ use errors::{Error, ErrorKind, SourceDestError, SourceDestErrorKind};
 pub use dir::*;
 pub use file::*;
 pub use open_options::OpenOptions;
+pub use path::PathExt;
 
 /// Wrapper for [`fs::read`](https://doc.rust-lang.org/stable/std/fs/fn.read.html).
 pub fn read<P: AsRef<Path> + Into<PathBuf>>(path: P) -> io::Result<Vec<u8>> {
