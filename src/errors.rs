@@ -94,6 +94,14 @@ pub(crate) enum SourceDestErrorKind {
     HardLink,
     Rename,
     SoftLink,
+
+    #[cfg(unix)]
+    Symlink,
+
+    #[cfg(windows)]
+    SymlinkDir,
+    #[cfg(windows)]
+    SymlinkFile,
 }
 
 /// Error type used by functions like `fs::copy` that holds two paths.
@@ -140,6 +148,20 @@ impl fmt::Display for SourceDestError {
             }
             SourceDestErrorKind::SoftLink => {
                 write!(formatter, "failed to softlink file from {} to {}", from, to)
+            }
+
+            #[cfg(unix)]
+            SourceDestErrorKind::Symlink => {
+                write!(formatter, "failed to symlink file from {} to {}", from, to)
+            }
+
+            #[cfg(windows)]
+            SourceDestErrorKind::SymlinkFile => {
+                write!(formatter, "failed to symlink file from {} to {}", from, to)
+            }
+            #[cfg(windows)]
+            SourceDestErrorKind::SymlinkDir => {
+                write!(formatter, "failed to symlink dir from {} to {}", from, to)
             }
         }
     }

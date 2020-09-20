@@ -73,6 +73,7 @@ mod dir;
 mod errors;
 mod file;
 mod open_options;
+pub mod os;
 mod path;
 
 use std::fs;
