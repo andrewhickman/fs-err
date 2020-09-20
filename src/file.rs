@@ -219,3 +219,78 @@ impl<'a> Write for &'a File {
             .map_err(|source| self.error(source, ErrorKind::Flush))
     }
 }
+
+#[cfg(unix)]
+mod unix {
+    use crate::os::unix::fs::FileExt;
+    use crate::ErrorKind;
+    use std::io;
+    use std::os::unix::fs::FileExt as _;
+    use std::os::unix::io::{AsRawFd, IntoRawFd, RawFd};
+
+    impl AsRawFd for crate::File {
+        fn as_raw_fd(&self) -> RawFd {
+            self.file().as_raw_fd()
+        }
+    }
+
+    impl IntoRawFd for crate::File {
+        fn into_raw_fd(self) -> RawFd {
+            self.file.into_raw_fd()
+        }
+    }
+
+    impl FileExt for crate::File {
+        fn read_at(&self, buf: &mut [u8], offset: u64) -> io::Result<usize> {
+            self.file()
+                .read_at(buf, offset)
+                .map_err(|err| self.error(err, ErrorKind::ReadAt))
+        }
+        fn write_at(&self, buf: &[u8], offset: u64) -> io::Result<usize> {
+            self.file()
+                .write_at(buf, offset)
+                .map_err(|err| self.error(err, ErrorKind::WriteAt))
+        }
+    }
+}
+
+#[cfg(windows)]
+mod windows {
+    use crate::os::windows::fs::FileExt;
+    use crate::ErrorKind;
+    use std::io;
+    use std::os::windows::{
+        fs::FileExt as _,
+        io::{AsRawHandle, IntoRawHandle, RawHandle},
+    };
+
+    impl FileExt for crate::File {
+        fn seek_read(&self, buf: &mut [u8], offset: u64) -> io::Result<usize> {
+            self.file()
+                .seek_read(buf, offset)
+                .map_err(|err| self.error(err, ErrorKind::SeekRead))
+        }
+
+        fn seek_write(&self, buf: &[u8], offset: u64) -> io::Result<usize> {
+            self.file()
+                .seek_write(buf, offset)
+                .map_err(|err| self.error(err, ErrorKind::SeekWrite))
+        }
+    }
+
+    impl AsRawHandle for crate::File {
+        fn as_raw_handle(&self) -> RawHandle {
+            self.file().as_raw_handle()
+        }
+    }
+
+    // can't be implemented, because the trait doesn't give us a Path
+    // impl std::os::windows::io::FromRawHandle for crate::File {
+    // }
+
+    impl IntoRawHandle for crate::File {
+        fn into_raw_handle(self) -> RawHandle {
+            self.file.into_raw_handle()
+        }
+    }
+}
