@@ -237,4 +237,5 @@ mod private {
 
     impl Sealed for crate::File {}
     impl Sealed for std::path::Path {}
+    impl Sealed for crate::OpenOptions {}
 }
