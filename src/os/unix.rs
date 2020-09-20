@@ -25,4 +25,15 @@ pub mod fs {
         /// Wrapper for [`FileExt::write_at`](https://doc.rust-lang.org/std/os/unix/fs/trait.FileExt.html#tymethod.write_at)
         fn write_at(&self, buf: &[u8], offset: u64) -> io::Result<usize>;
     }
+
+    /// Wrapper for [`std::os::unix::fs::OpenOptionsExt`](https://doc.rust-lang.org/std/os/unix/fs/trait.OpenOptionsExt.html)
+    ///
+    /// The std traits might be extended in the future (See issue [#49961](https://github.com/rust-lang/rust/issues/49961#issuecomment-382751777)).
+    /// This trait is sealed and can not be implemented by other crates.
+    pub trait OpenOptionsExt: crate::Sealed {
+        /// Wapper for [`OpenOptionsExt::mode`](https://doc.rust-lang.org/std/os/unix/fs/trait.OpenOptionsExt.html#tymethod.mode)
+        fn mode(&mut self, mode: u32) -> &mut Self;
+        /// Wapper for [`OpenOptionsExt::custom_flags`](https://doc.rust-lang.org/std/os/unix/fs/trait.OpenOptionsExt.html#tymethod.custom_flags)
+        fn custom_flags(&mut self, flags: i32) -> &mut Self;
+    }
 }
