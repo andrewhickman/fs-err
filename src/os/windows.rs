@@ -4,21 +4,21 @@ pub mod fs {
     use std::io;
     use std::path::{Path, PathBuf};
     /// Wrapper for [std::os::windows::fs::symlink_dir](https://doc.rust-lang.org/std/os/windows/fs/fn.symlink_dir.html)
-    pub fn symlink_dir<P: AsRef<Path> + Into<PathBuf>, Q: AsRef<Path> + Into<PathBuf>>(
-        src: P,
-        dst: Q,
-    ) -> io::Result<()> {
-        std::os::windows::fs::symlink_dir(src.as_ref(), dst.as_ref())
-            .map_err(|err| SourceDestError::new(err, SourceDestErrorKind::SymlinkDir, src, dst))
+    pub fn symlink_dir<P: AsRef<Path>, Q: AsRef<Path>>(src: P, dst: Q) -> io::Result<()> {
+        let src = src.as_ref();
+        let dst = dst.as_ref();
+        std::os::windows::fs::symlink_dir(src, dst).map_err(|err| {
+            SourceDestError::new_from_ref(err, SourceDestErrorKind::SymlinkDir, src, dst)
+        })
     }
 
     /// Wrapper for [std::os::windows::fs::symlink_file](https://doc.rust-lang.org/std/os/windows/fs/fn.symlink_file.html)
-    pub fn symlink_file<P: AsRef<Path> + Into<PathBuf>, Q: AsRef<Path> + Into<PathBuf>>(
-        src: P,
-        dst: Q,
-    ) -> io::Result<()> {
-        std::os::windows::fs::symlink_file(src.as_ref(), dst.as_ref())
-            .map_err(|err| SourceDestError::new(err, SourceDestErrorKind::SymlinkFile, src, dst))
+    pub fn symlink_file<P: AsRef<Path>, Q: AsRef<Path>>(src: P, dst: Q) -> io::Result<()> {
+        let src = src.as_ref();
+        let dst = dst.as_ref();
+        std::os::windows::fs::symlink_file(src, dst).map_err(|err| {
+            SourceDestError::new_from_ref(err, SourceDestErrorKind::SymlinkFile, src, dst)
+        })
     }
 
     /// Wrapper for [`std::os::windows::fs::FileExt`](https://doc.rust-lang.org/std/os/windows/fs/trait.FileExt.html).

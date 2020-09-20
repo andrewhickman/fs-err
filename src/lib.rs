@@ -88,140 +88,147 @@ pub use open_options::OpenOptions;
 pub use path::PathExt;
 
 /// Wrapper for [`fs::read`](https://doc.rust-lang.org/stable/std/fs/fn.read.html).
-pub fn read<P: AsRef<Path> + Into<PathBuf>>(path: P) -> io::Result<Vec<u8>> {
-    let mut file = File::open(path)?;
+pub fn read<P: Into<PathBuf>>(path: P) -> io::Result<Vec<u8>> {
+    let mut file = File::open(path.into())?;
     let mut bytes = Vec::with_capacity(initial_buffer_size(&file));
     file.read_to_end(&mut bytes)?;
     Ok(bytes)
 }
 
 /// Wrapper for [`fs::read_to_string`](https://doc.rust-lang.org/stable/std/fs/fn.read_to_string.html).
-pub fn read_to_string<P: AsRef<Path> + Into<PathBuf>>(path: P) -> io::Result<String> {
-    let mut file = File::open(path)?;
+pub fn read_to_string<P: Into<PathBuf>>(path: P) -> io::Result<String> {
+    let mut file = File::open(path.into())?;
     let mut string = String::with_capacity(initial_buffer_size(&file));
     file.read_to_string(&mut string)?;
     Ok(string)
 }
 
 /// Wrapper for [`fs::write`](https://doc.rust-lang.org/stable/std/fs/fn.write.html).
-pub fn write<P: AsRef<Path> + Into<PathBuf>, C: AsRef<[u8]>>(
-    path: P,
-    contents: C,
-) -> io::Result<()> {
-    File::create(path)?.write_all(contents.as_ref())
+pub fn write<P: Into<PathBuf>, C: AsRef<[u8]>>(path: P, contents: C) -> io::Result<()> {
+    File::create(path.into())?.write_all(contents.as_ref())
 }
 
 /// Wrapper for [`fs::copy`](https://doc.rust-lang.org/stable/std/fs/fn.copy.html).
 pub fn copy<P, Q>(from: P, to: Q) -> io::Result<u64>
 where
-    P: AsRef<Path> + Into<PathBuf>,
-    Q: AsRef<Path> + Into<PathBuf>,
+    P: AsRef<Path>,
+    Q: AsRef<Path>,
 {
-    fs::copy(from.as_ref(), to.as_ref())
-        .map_err(|source| SourceDestError::new(source, SourceDestErrorKind::Copy, from, to))
+    let from = from.as_ref();
+    let to = to.as_ref();
+    fs::copy(from, to).map_err(|source| {
+        SourceDestError::new_from_ref(source, SourceDestErrorKind::Copy, from, to)
+    })
 }
 
 /// Wrapper for [`fs::create_dir`](https://doc.rust-lang.org/stable/std/fs/fn.create_dir.html).
 pub fn create_dir<P>(path: P) -> io::Result<()>
 where
-    P: AsRef<Path> + Into<PathBuf>,
+    P: AsRef<Path>,
 {
-    fs::create_dir(path.as_ref()).map_err(|source| Error::new(source, ErrorKind::CreateDir, path))
+    let path = path.as_ref();
+    fs::create_dir(path).map_err(|source| Error::new_from_ref(source, ErrorKind::CreateDir, path))
 }
 
 /// Wrapper for [`fs::create_dir_all`](https://doc.rust-lang.org/stable/std/fs/fn.create_dir_all.html).
 pub fn create_dir_all<P>(path: P) -> io::Result<()>
 where
-    P: AsRef<Path> + Into<PathBuf>,
+    P: AsRef<Path>,
 {
-    fs::create_dir_all(path.as_ref())
-        .map_err(|source| Error::new(source, ErrorKind::CreateDir, path))
+    let path = path.as_ref();
+    fs::create_dir_all(path)
+        .map_err(|source| Error::new_from_ref(source, ErrorKind::CreateDir, path))
 }
 
 /// Wrapper for [`fs::remove_dir`](https://doc.rust-lang.org/stable/std/fs/fn.remove_dir.html).
 pub fn remove_dir<P>(path: P) -> io::Result<()>
 where
-    P: AsRef<Path> + Into<PathBuf>,
+    P: AsRef<Path>,
 {
-    fs::remove_dir(path.as_ref()).map_err(|source| Error::new(source, ErrorKind::RemoveDir, path))
+    let path = path.as_ref();
+    fs::remove_dir(path).map_err(|source| Error::new_from_ref(source, ErrorKind::RemoveDir, path))
 }
 
 /// Wrapper for [`fs::remove_dir_all`](https://doc.rust-lang.org/stable/std/fs/fn.remove_dir_all.html).
 pub fn remove_dir_all<P>(path: P) -> io::Result<()>
 where
-    P: AsRef<Path> + Into<PathBuf>,
+    P: AsRef<Path>,
 {
-    fs::remove_dir_all(path.as_ref())
-        .map_err(|source| Error::new(source, ErrorKind::RemoveDir, path))
+    let path = path.as_ref();
+    fs::remove_dir_all(path)
+        .map_err(|source| Error::new_from_ref(source, ErrorKind::RemoveDir, path))
 }
 
 /// Wrapper for [`fs::remove_file`](https://doc.rust-lang.org/stable/std/fs/fn.remove_file.html).
 pub fn remove_file<P>(path: P) -> io::Result<()>
 where
-    P: AsRef<Path> + Into<PathBuf>,
+    P: AsRef<Path>,
 {
-    fs::remove_file(path.as_ref()).map_err(|source| Error::new(source, ErrorKind::RemoveFile, path))
+    let path = path.as_ref();
+    fs::remove_file(path).map_err(|source| Error::new_from_ref(source, ErrorKind::RemoveFile, path))
 }
 
 /// Wrapper for [`fs::metadata`](https://doc.rust-lang.org/stable/std/fs/fn.metadata.html).
-pub fn metadata<P: AsRef<Path> + Into<PathBuf>>(path: P) -> io::Result<fs::Metadata> {
-    fs::metadata(path.as_ref()).map_err(|source| Error::new(source, ErrorKind::Metadata, path))
+pub fn metadata<P: AsRef<Path>>(path: P) -> io::Result<fs::Metadata> {
+    let path = path.as_ref();
+    fs::metadata(path).map_err(|source| Error::new_from_ref(source, ErrorKind::Metadata, path))
 }
 
 /// Wrapper for [`fs::canonicalize`](https://doc.rust-lang.org/stable/std/fs/fn.canonicalize.html).
-pub fn canonicalize<P: AsRef<Path> + Into<PathBuf>>(path: P) -> io::Result<PathBuf> {
-    fs::canonicalize(path.as_ref())
-        .map_err(|source| Error::new(source, ErrorKind::Canonicalize, path))
+pub fn canonicalize<P: AsRef<Path>>(path: P) -> io::Result<PathBuf> {
+    let path = path.as_ref();
+    fs::canonicalize(path)
+        .map_err(|source| Error::new_from_ref(source, ErrorKind::Canonicalize, path))
 }
 
 /// Wrapper for [`fs::hard_link`](https://doc.rust-lang.org/stable/std/fs/fn.hard_link.html).
-pub fn hard_link<P: AsRef<Path> + Into<PathBuf>, Q: AsRef<Path> + Into<PathBuf>>(
-    src: P,
-    dst: Q,
-) -> io::Result<()> {
-    fs::hard_link(src.as_ref(), dst.as_ref())
-        .map_err(|source| SourceDestError::new(source, SourceDestErrorKind::HardLink, src, dst))
+pub fn hard_link<P: AsRef<Path>, Q: AsRef<Path>>(src: P, dst: Q) -> io::Result<()> {
+    let src = src.as_ref();
+    let dst = dst.as_ref();
+    fs::hard_link(src, dst).map_err(|source| {
+        SourceDestError::new_from_ref(source, SourceDestErrorKind::HardLink, src, dst)
+    })
 }
 
 /// Wrapper for [`fs::read_link`](https://doc.rust-lang.org/stable/std/fs/fn.read_link.html).
-pub fn read_link<P: AsRef<Path> + Into<PathBuf>>(path: P) -> io::Result<PathBuf> {
-    fs::read_link(path.as_ref()).map_err(|source| Error::new(source, ErrorKind::ReadLink, path))
+pub fn read_link<P: AsRef<Path>>(path: P) -> io::Result<PathBuf> {
+    let path = path.as_ref();
+    fs::read_link(path).map_err(|source| Error::new_from_ref(source, ErrorKind::ReadLink, path))
 }
 
 /// Wrapper for [`fs::rename`](https://doc.rust-lang.org/stable/std/fs/fn.rename.html).
-pub fn rename<P: AsRef<Path> + Into<PathBuf>, Q: AsRef<Path> + Into<PathBuf>>(
-    from: P,
-    to: Q,
-) -> io::Result<()> {
-    fs::rename(from.as_ref(), to.as_ref())
-        .map_err(|source| SourceDestError::new(source, SourceDestErrorKind::Rename, from, to))
+pub fn rename<P: AsRef<Path>, Q: AsRef<Path>>(from: P, to: Q) -> io::Result<()> {
+    let from = from.as_ref();
+    let to = to.as_ref();
+    fs::rename(from, to).map_err(|source| {
+        SourceDestError::new_from_ref(source, SourceDestErrorKind::Rename, from, to)
+    })
 }
 
 /// Wrapper for [`fs::soft_link`](https://doc.rust-lang.org/stable/std/fs/fn.soft_link.html).
 #[deprecated = "replaced with std::os::unix::fs::symlink and \
 std::os::windows::fs::{symlink_file, symlink_dir}"]
-pub fn soft_link<P: AsRef<Path> + Into<PathBuf>, Q: AsRef<Path> + Into<PathBuf>>(
-    src: P,
-    dst: Q,
-) -> io::Result<()> {
+pub fn soft_link<P: AsRef<Path>, Q: AsRef<Path>>(src: P, dst: Q) -> io::Result<()> {
+    let src = src.as_ref();
+    let dst = dst.as_ref();
     #[allow(deprecated)]
-    fs::soft_link(src.as_ref(), dst.as_ref())
-        .map_err(|source| SourceDestError::new(source, SourceDestErrorKind::SoftLink, src, dst))
+    fs::soft_link(src, dst).map_err(|source| {
+        SourceDestError::new_from_ref(source, SourceDestErrorKind::SoftLink, src, dst)
+    })
 }
 
 /// Wrapper for [`fs::symlink_metadata`](https://doc.rust-lang.org/stable/std/fs/fn.symlink_metadata.html).
-pub fn symlink_metadata<P: AsRef<Path> + Into<PathBuf>>(path: P) -> io::Result<fs::Metadata> {
-    fs::symlink_metadata(path.as_ref())
-        .map_err(|source| Error::new(source, ErrorKind::SymlinkMetadata, path))
+pub fn symlink_metadata<P: AsRef<Path>>(path: P) -> io::Result<fs::Metadata> {
+    let path = path.as_ref();
+    fs::symlink_metadata(path)
+        .map_err(|source| Error::new_from_ref(source, ErrorKind::SymlinkMetadata, path))
 }
 
 /// Wrapper for [`fs::set_permissions`](https://doc.rust-lang.org/stable/std/fs/fn.set_permissions.html).
-pub fn set_permissions<P: AsRef<Path> + Into<PathBuf>>(
-    path: P,
-    perm: fs::Permissions,
-) -> io::Result<()> {
-    fs::set_permissions(path.as_ref(), perm)
-        .map_err(|source| Error::new(source, ErrorKind::SetPermissions, path))
+pub fn set_permissions<P: AsRef<Path>>(path: P, perm: fs::Permissions) -> io::Result<()> {
+    let path = path.as_ref();
+    fs::set_permissions(path, perm)
+        .map_err(|source| Error::new_from_ref(source, ErrorKind::SetPermissions, path))
 }
 
 fn initial_buffer_size(file: &File) -> usize {

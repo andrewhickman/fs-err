@@ -1,18 +1,18 @@
 /// Unix-specific extensions to wrappers in `fs_err` for `std::fs` types.
 pub mod fs {
+    use std::io;
     use std::path::Path;
-    use std::{io, path::PathBuf};
 
     use crate::SourceDestError;
     use crate::SourceDestErrorKind;
 
     /// Wrapper for [`std::os::unix::fs::symlink`](https://doc.rust-lang.org/std/os/unix/fs/fn.symlink.html)
-    pub fn symlink<P: AsRef<Path> + Into<PathBuf>, Q: AsRef<Path> + Into<PathBuf>>(
-        src: P,
-        dst: Q,
-    ) -> io::Result<()> {
-        std::os::unix::fs::symlink(src.as_ref(), dst.as_ref())
-            .map_err(|err| SourceDestError::new(err, SourceDestErrorKind::Symlink, src, dst))
+    pub fn symlink<P: AsRef<Path>, Q: AsRef<Path>>(src: P, dst: Q) -> io::Result<()> {
+        let src = src.as_ref();
+        let dst = dst.as_ref();
+        std::os::unix::fs::symlink(src, dst).map_err(|err| {
+            SourceDestError::new_from_ref(err, SourceDestErrorKind::Symlink, src, dst)
+        })
     }
 
     /// Wrapper for [`std::os::unix::fs::FileExt`](https://doc.rust-lang.org/std/os/unix/fs/trait.FileExt.html).

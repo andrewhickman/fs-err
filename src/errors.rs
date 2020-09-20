@@ -1,7 +1,7 @@
 use std::error::Error as StdError;
 use std::fmt;
 use std::io;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 #[derive(Debug, Clone, Copy)]
 pub(crate) enum ErrorKind {
@@ -47,13 +47,17 @@ pub(crate) struct Error {
 }
 
 impl Error {
-    pub fn new<P: Into<PathBuf>>(source: io::Error, kind: ErrorKind, path: P) -> io::Error {
+    pub fn new(source: io::Error, kind: ErrorKind, path: PathBuf) -> io::Error {
+        io::Error::new(source.kind(), Self { kind, source, path })
+    }
+
+    pub fn new_from_ref(source: io::Error, kind: ErrorKind, path: &Path) -> io::Error {
         io::Error::new(
             source.kind(),
             Self {
                 kind,
                 source,
-                path: path.into(),
+                path: path.to_path_buf(),
             },
         )
     }
@@ -134,21 +138,30 @@ pub(crate) struct SourceDestError {
 }
 
 impl SourceDestError {
-    pub fn new<P: Into<PathBuf>, Q: Into<PathBuf>>(
+    pub fn new(
         source: io::Error,
         kind: SourceDestErrorKind,
-        from: P,
-        to: Q,
+        from_path: PathBuf,
+        to_path: PathBuf,
     ) -> io::Error {
         io::Error::new(
             source.kind(),
             Self {
                 source,
                 kind,
-                from_path: from.into(),
-                to_path: to.into(),
+                from_path,
+                to_path,
             },
         )
+    }
+
+    pub fn new_from_ref(
+        source: io::Error,
+        kind: SourceDestErrorKind,
+        from_path: &Path,
+        to_path: &Path,
+    ) -> io::Error {
+        Self::new(source, kind, from_path.to_path_buf(), to_path.to_path_buf())
     }
 }
 

@@ -1,4 +1,3 @@
-use std::path::Path;
 use std::{fs, io, path::PathBuf};
 #[derive(Clone, Debug)]
 /// Wrapper around [`std::fs::OptionOptions`](https://doc.rust-lang.org/std/fs/struct.OpenOptions.html)
@@ -49,14 +48,14 @@ impl OpenOptions {
     /// Wrapper for [`std::fs::OpenOptions::open`](https://doc.rust-lang.org/std/fs/struct.OpenOptions.html#method.open)
     pub fn open<P>(&self, path: P) -> io::Result<crate::File>
     where
-        P: AsRef<Path> + Into<PathBuf>,
+        P: Into<PathBuf>,
     {
         // We have to either duplicate the logic or call the deprecated method here.
         // We can't let the deprecated function call this method, because we can't construct
         // `&fs_err::OpenOptions` from `&fs::OpenOptions` without cloning
         // (although cloning would probably be cheap).
         #[allow(deprecated)]
-        crate::File::from_options(path, self.options())
+        crate::File::from_options(path.into(), self.options())
     }
 }
 

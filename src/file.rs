@@ -21,10 +21,11 @@ impl File {
     /// Wrapper for [`File::open`](https://doc.rust-lang.org/stable/std/fs/struct.File.html#method.open).
     pub fn open<P>(path: P) -> Result<Self, io::Error>
     where
-        P: AsRef<Path> + Into<PathBuf>,
+        P: Into<PathBuf>,
     {
-        match fs::File::open(path.as_ref()) {
-            Ok(file) => Ok(File::from_parts(file, path.into())),
+        let path = path.into();
+        match fs::File::open(&path) {
+            Ok(file) => Ok(File::from_parts(file, path)),
             Err(source) => Err(Error::new(source, ErrorKind::OpenFile, path)),
         }
     }
@@ -32,10 +33,11 @@ impl File {
     /// Wrapper for [`File::create`](https://doc.rust-lang.org/stable/std/fs/struct.File.html#method.create).
     pub fn create<P>(path: P) -> Result<Self, io::Error>
     where
-        P: AsRef<Path> + Into<PathBuf>,
+        P: Into<PathBuf>,
     {
-        match fs::File::create(path.as_ref()) {
-            Ok(file) => Ok(File::from_parts(file, path.into())),
+        let path = path.into();
+        match fs::File::create(&path) {
+            Ok(file) => Ok(File::from_parts(file, path)),
             Err(source) => Err(Error::new(source, ErrorKind::CreateFile, path)),
         }
     }
@@ -47,10 +49,11 @@ impl File {
     #[deprecated = "use fs_err::OpenOptions::open instead"]
     pub fn from_options<P>(path: P, options: &fs::OpenOptions) -> Result<Self, io::Error>
     where
-        P: AsRef<Path> + Into<PathBuf>,
+        P: Into<PathBuf>,
     {
-        match options.open(path.as_ref()) {
-            Ok(file) => Ok(File::from_parts(file, path.into())),
+        let path = path.into();
+        match options.open(&path) {
+            Ok(file) => Ok(File::from_parts(file, path)),
             Err(source) => Err(Error::new(source, ErrorKind::OpenFile, path)),
         }
     }
@@ -132,7 +135,7 @@ impl File {
 
     /// Wrap the error in information specific to this `File` object.
     fn error(&self, source: io::Error, kind: ErrorKind) -> io::Error {
-        Error::new(source, kind, &self.path)
+        Error::new_from_ref(source, kind, &self.path)
     }
 }
 
