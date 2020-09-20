@@ -23,6 +23,16 @@ pub(crate) enum ErrorKind {
     Canonicalize,
     ReadLink,
     SymlinkMetadata,
+
+    #[cfg(windows)]
+    SeekRead,
+    #[cfg(windows)]
+    SeekWrite,
+
+    #[cfg(unix)]
+    ReadAt,
+    #[cfg(unix)]
+    WriteAt,
 }
 
 /// Contains an IO error that has a file path attached.
@@ -74,6 +84,16 @@ impl fmt::Display for Error {
             Canonicalize => write!(formatter, "failed to canonicalize path `{}`", path),
             ReadLink => write!(formatter, "failed to read symbolic link `{}`", path),
             SymlinkMetadata => write!(formatter, "failed to query metadata of symlink `{}`", path),
+
+            #[cfg(windows)]
+            SeekRead => write!(formatter, "failed to seek and read from `{}`", path),
+            #[cfg(windows)]
+            SeekWrite => write!(formatter, "failed to seek and write to `{}`", path),
+
+            #[cfg(unix)]
+            ReadAt => write!(formatter, "failed to read with offset from `{}`", path),
+            #[cfg(unix)]
+            WriteAt => write!(formatter, "failed to write with offset to `{}`", path),
         }
     }
 }

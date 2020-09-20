@@ -230,3 +230,11 @@ fn initial_buffer_size(file: &File) -> usize {
         .map(|m| m.len() as usize + 1)
         .unwrap_or(0)
 }
+
+pub(crate) use private::Sealed;
+mod private {
+    pub trait Sealed {}
+
+    impl Sealed for crate::File {}
+    impl Sealed for std::path::Path {}
+}

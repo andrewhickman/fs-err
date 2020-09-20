@@ -7,7 +7,7 @@ use std::path::{Path, PathBuf};
 /// This trait is sealed and can not be implemented by other crates.
 //
 // Because noone else can implement it, we can add methods backwards-compatibly.
-pub trait PathExt: private::Sealed {
+pub trait PathExt: crate::Sealed {
     /// Wrapper for [`crate::metadata`].
     fn fs_err_metadata(&self) -> io::Result<fs::Metadata>;
     /// Wrapper for [`crate::symlink_metadata`].
@@ -40,10 +40,4 @@ impl PathExt for Path {
     fn fs_err_read_dir(&self) -> io::Result<crate::ReadDir> {
         crate::read_dir(self)
     }
-}
-
-mod private {
-    pub trait Sealed {}
-
-    impl Sealed for std::path::Path {}
 }
