@@ -1,5 +1,15 @@
 # fs-err Changelog
 
+## Unreleased
+* Added `symlink` for unix platforms
+* Added `symlink_file` and `symlink_dir` for windows
+* Implemented os-specific extension traits for `File`
+  - `std::os::unix::io::{AsRawFd, IntoRawFd}`
+  - `std::os::windows::io::{AsRawHandle, IntoRawHandle}`
+  - Added trait wrappers for `std::os::{unix, windows}::fs::FileExt` and implemented them for `fs_err::File`
+* Implemented os-specific extension traits for `OpenOptions`
+  - Added trait wrappers for `std::os::{unix, windows}::fs::OpenOptionsExt` and implemented them for `fs_err::OpenOptions`
+  
 ## 2.4.0
 * Added `canonicalize`, `hard link`, `read_link`, `rename`, `symlink_metadata` and `soft_link`. ([#25](https://github.com/andrewhickman/fs-err/pull/25))
 * Added aliases to `std::path::Path` via extension trait ([#26](https://github.com/andrewhickman/fs-err/pull/26))
