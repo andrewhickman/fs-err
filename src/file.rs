@@ -146,7 +146,7 @@ impl File {
 
     /// Wrap the error in information specific to this `File` object.
     fn error(&self, source: io::Error, kind: ErrorKind) -> io::Error {
-        Error::new_from_ref(source, kind, &self.path)
+        Error::new(source, kind, &self.path)
     }
 }
 

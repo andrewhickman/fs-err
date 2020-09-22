@@ -10,9 +10,8 @@ pub mod fs {
     pub fn symlink<P: AsRef<Path>, Q: AsRef<Path>>(src: P, dst: Q) -> io::Result<()> {
         let src = src.as_ref();
         let dst = dst.as_ref();
-        std::os::unix::fs::symlink(src, dst).map_err(|err| {
-            SourceDestError::new_from_ref(err, SourceDestErrorKind::Symlink, src, dst)
-        })
+        std::os::unix::fs::symlink(src, dst)
+            .map_err(|err| SourceDestError::new(err, SourceDestErrorKind::Symlink, src, dst))
     }
 
     /// Wrapper for [`std::os::unix::fs::FileExt`](https://doc.rust-lang.org/std/os/unix/fs/trait.FileExt.html).
