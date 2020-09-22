@@ -14,6 +14,17 @@ pub struct File {
     path: PathBuf,
 }
 
+// Opens a std File and returns it or an error generator which only needs the path to produce the error.
+// Exists for the `crate::read*` functions so they don't unconditionally build a PathBuf.
+pub(crate) fn open(path: &Path) -> Result<std::fs::File, impl FnOnce(PathBuf) -> io::Error> {
+    fs::File::open(&path).map_err(|err| |path| Error::new(err, ErrorKind::OpenFile, path))
+}
+
+// like `open()` but for `crate::write`
+pub(crate) fn create(path: &Path) -> Result<std::fs::File, impl FnOnce(PathBuf) -> io::Error> {
+    fs::File::create(&path).map_err(|err| |path| Error::new(err, ErrorKind::CreateFile, path))
+}
+
 /// Wrappers for methods from [`std::fs::File`][std::fs::File].
 ///
 /// [std::fs::File]: https://doc.rust-lang.org/stable/std/fs/struct.File.html
@@ -24,9 +35,9 @@ impl File {
         P: Into<PathBuf>,
     {
         let path = path.into();
-        match fs::File::open(&path) {
+        match open(&path) {
             Ok(file) => Ok(File::from_parts(file, path)),
-            Err(source) => Err(Error::new(source, ErrorKind::OpenFile, path)),
+            Err(err_gen) => Err(err_gen(path)),
         }
     }
 
@@ -36,9 +47,9 @@ impl File {
         P: Into<PathBuf>,
     {
         let path = path.into();
-        match fs::File::create(&path) {
+        match create(&path) {
             Ok(file) => Ok(File::from_parts(file, path)),
-            Err(source) => Err(Error::new(source, ErrorKind::CreateFile, path)),
+            Err(err_gen) => Err(err_gen(path)),
         }
     }
 

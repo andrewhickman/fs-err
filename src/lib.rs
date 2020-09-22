@@ -88,24 +88,32 @@ pub use open_options::OpenOptions;
 pub use path::PathExt;
 
 /// Wrapper for [`fs::read`](https://doc.rust-lang.org/stable/std/fs/fn.read.html).
-pub fn read<P: Into<PathBuf>>(path: P) -> io::Result<Vec<u8>> {
-    let mut file = File::open(path.into())?;
+pub fn read<P: AsRef<Path>>(path: P) -> io::Result<Vec<u8>> {
+    let path = path.as_ref();
+    let mut file = file::open(path.as_ref()).map_err(|err_gen| err_gen(path.to_path_buf()))?;
     let mut bytes = Vec::with_capacity(initial_buffer_size(&file));
-    file.read_to_end(&mut bytes)?;
+    file.read_to_end(&mut bytes)
+        .map_err(|err| Error::new_from_ref(err, ErrorKind::Read, path))?;
     Ok(bytes)
 }
 
 /// Wrapper for [`fs::read_to_string`](https://doc.rust-lang.org/stable/std/fs/fn.read_to_string.html).
-pub fn read_to_string<P: Into<PathBuf>>(path: P) -> io::Result<String> {
-    let mut file = File::open(path.into())?;
+pub fn read_to_string<P: AsRef<Path>>(path: P) -> io::Result<String> {
+    let path = path.as_ref();
+    let mut file = file::open(path.as_ref()).map_err(|err_gen| err_gen(path.to_path_buf()))?;
     let mut string = String::with_capacity(initial_buffer_size(&file));
-    file.read_to_string(&mut string)?;
+    file.read_to_string(&mut string)
+        .map_err(|err| Error::new_from_ref(err, ErrorKind::Read, path))?;
     Ok(string)
 }
 
 /// Wrapper for [`fs::write`](https://doc.rust-lang.org/stable/std/fs/fn.write.html).
-pub fn write<P: Into<PathBuf>, C: AsRef<[u8]>>(path: P, contents: C) -> io::Result<()> {
-    File::create(path.into())?.write_all(contents.as_ref())
+pub fn write<P: AsRef<Path>, C: AsRef<[u8]>>(path: P, contents: C) -> io::Result<()> {
+    let path = path.as_ref();
+    file::create(path)
+        .map_err(|err_gen| err_gen(path.to_path_buf()))?
+        .write_all(contents.as_ref())
+        .map_err(|err| Error::new_from_ref(err, ErrorKind::Write, path))
 }
 
 /// Wrapper for [`fs::copy`](https://doc.rust-lang.org/stable/std/fs/fn.copy.html).
@@ -231,11 +239,8 @@ pub fn set_permissions<P: AsRef<Path>>(path: P, perm: fs::Permissions) -> io::Re
         .map_err(|source| Error::new_from_ref(source, ErrorKind::SetPermissions, path))
 }
 
-fn initial_buffer_size(file: &File) -> usize {
-    file.file()
-        .metadata()
-        .map(|m| m.len() as usize + 1)
-        .unwrap_or(0)
+fn initial_buffer_size(file: &std::fs::File) -> usize {
+    file.metadata().map(|m| m.len() as usize + 1).unwrap_or(0)
 }
 
 pub(crate) use private::Sealed;
