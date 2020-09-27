@@ -1,6 +1,6 @@
 # fs-err Changelog
 
-## Unreleased
+## 2.5.0
 * Added `symlink` for unix platforms
 * Added `symlink_file` and `symlink_dir` for windows
 * Implemented os-specific extension traits for `File`
