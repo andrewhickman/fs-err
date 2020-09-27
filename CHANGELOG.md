@@ -9,6 +9,8 @@
   - Added trait wrappers for `std::os::{unix, windows}::fs::FileExt` and implemented them for `fs_err::File`
 * Implemented os-specific extension traits for `OpenOptions`
   - Added trait wrappers for `std::os::{unix, windows}::fs::OpenOptionsExt` and implemented them for `fs_err::OpenOptions`
+* Improved compile times by converting arguments early and forwarding only a small number of types internally. There will be a slight performance hit only in the error case.
+* Reduced trait bounds on generics from `AsRef<Path> + Into<PathBuf>` to either `AsRef<Path>` or `Into<PathBuf>`, making the functions more general.
   
 ## 2.4.0
 * Added `canonicalize`, `hard link`, `read_link`, `rename`, `symlink_metadata` and `soft_link`. ([#25](https://github.com/andrewhickman/fs-err/pull/25))
