@@ -6,7 +6,7 @@ use std::path::{Path, PathBuf};
 ///
 /// This trait is sealed and can not be implemented by other crates.
 //
-// Because noone else can implement it, we can add methods backwards-compatibly.
+// Because no one else can implement it, we can add methods backwards-compatibly.
 pub trait PathExt: crate::Sealed {
     /// Wrapper for [`crate::metadata`].
     fn fs_err_metadata(&self) -> io::Result<fs::Metadata>;
