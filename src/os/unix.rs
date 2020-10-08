@@ -30,9 +30,9 @@ pub mod fs {
     /// The std traits might be extended in the future (See issue [#49961](https://github.com/rust-lang/rust/issues/49961#issuecomment-382751777)).
     /// This trait is sealed and can not be implemented by other crates.
     pub trait OpenOptionsExt: crate::Sealed {
-        /// Wapper for [`OpenOptionsExt::mode`](https://doc.rust-lang.org/std/os/unix/fs/trait.OpenOptionsExt.html#tymethod.mode)
+        /// Wrapper for [`OpenOptionsExt::mode`](https://doc.rust-lang.org/std/os/unix/fs/trait.OpenOptionsExt.html#tymethod.mode)
         fn mode(&mut self, mode: u32) -> &mut Self;
-        /// Wapper for [`OpenOptionsExt::custom_flags`](https://doc.rust-lang.org/std/os/unix/fs/trait.OpenOptionsExt.html#tymethod.custom_flags)
+        /// Wrapper for [`OpenOptionsExt::custom_flags`](https://doc.rust-lang.org/std/os/unix/fs/trait.OpenOptionsExt.html#tymethod.custom_flags)
         fn custom_flags(&mut self, flags: i32) -> &mut Self;
     }
 }

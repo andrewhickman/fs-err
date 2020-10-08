@@ -11,7 +11,7 @@
 
 fs-err is a drop-in replacement for [`std::fs`][std::fs] that provides more
 helpful messages on errors. Extra information includes which operations was
-attmpted and any involved paths.
+attempted and any involved paths.
 
 ## Error Messages
 
