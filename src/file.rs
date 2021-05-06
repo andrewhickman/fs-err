@@ -114,7 +114,13 @@ impl File {
             .set_permissions(perm)
             .map_err(|source| self.error(source, ErrorKind::SetPermissions))
     }
+}
 
+/// Methods added by fs-err that are not available on
+/// [`std::fs::File`][std::fs::File].
+///
+/// [std::fs::File]: https://doc.rust-lang.org/stable/std/fs/struct.File.html
+impl File {
     /// Creates a [`File`](struct.File.html) from a raw file and its path.
     pub fn from_parts<P>(file: fs::File, path: P) -> Self
     where
@@ -125,18 +131,24 @@ impl File {
             path: path.into(),
         }
     }
-}
 
-/// Methods added by fs-err that are not available on
-/// [`std::fs::File`][std::fs::File].
-///
-/// [std::fs::File]: https://doc.rust-lang.org/stable/std/fs/struct.File.html
-impl File {
+    /// Extract the raw file and its path from this [`File`](struct.File.html)
+    pub fn into_parts(self) -> (fs::File, PathBuf) {
+        (self.file, self.path)
+    }
+
     /// Returns a reference to the underlying [`std::fs::File`][std::fs::File].
     ///
     /// [std::fs::File]: https://doc.rust-lang.org/stable/std/fs/struct.File.html
     pub fn file(&self) -> &fs::File {
         &self.file
+    }
+
+    /// Returns a mutable reference to the underlying [`std::fs::File`][std::fs::File].
+    ///
+    /// [std::fs::File]: https://doc.rust-lang.org/stable/std/fs/struct.File.html
+    pub fn file_mut(&mut self) -> &mut fs::File {
+        &mut self.file
     }
 
     /// Returns a reference to the path that this file was created with.
