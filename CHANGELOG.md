@@ -3,6 +3,7 @@
 ## 2.6.0
 
 * Added [`File::into_parts`](https://docs.rs/fs-err/2.6.0/fs_err/struct.File.html#method.into_parts) and [`File::file_mut`](https://docs.rs/fs-err/2.6.0/fs_err/struct.File.html#method.file_mut) to provide more access to the underlying `std::fs::File`.
+* Fixed some typos in documention ([#33](https://github.com/andrewhickman/fs-err/pull/33))
 
 ## 2.5.0
 * Added `symlink` for unix platforms
