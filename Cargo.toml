@@ -13,5 +13,5 @@ readme = "README.md"
 [dependencies]
 
 [dev-dependencies]
-version-sync = "0.8.1"
-serde_json = "1.0.48"
+version-sync = "0.9.2"
+serde_json = "1.0.64"
