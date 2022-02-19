@@ -66,7 +66,7 @@ println!("Program config: {:?}", decoded);
 [serde_json]: https://crates.io/crates/serde_json
 */
 
-#![doc(html_root_url = "https://docs.rs/fs-err/2.6.0")]
+#![doc(html_root_url = "https://docs.rs/fs-err/2.6.1/")]
 #![deny(missing_debug_implementations, missing_docs)]
 
 mod dir;
