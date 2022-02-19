@@ -11,7 +11,7 @@ pub mod fs {
         let src = src.as_ref();
         let dst = dst.as_ref();
         std::os::unix::fs::symlink(src, dst)
-            .map_err(|err| SourceDestError::new(err, SourceDestErrorKind::Symlink, src, dst))
+            .map_err(|err| SourceDestError::build(err, SourceDestErrorKind::Symlink, src, dst))
     }
 
     /// Wrapper for [`std::os::unix::fs::FileExt`](https://doc.rust-lang.org/std/os/unix/fs/trait.FileExt.html).

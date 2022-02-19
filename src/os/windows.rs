@@ -8,7 +8,7 @@ pub mod fs {
         let src = src.as_ref();
         let dst = dst.as_ref();
         std::os::windows::fs::symlink_dir(src, dst)
-            .map_err(|err| SourceDestError::new(err, SourceDestErrorKind::SymlinkDir, src, dst))
+            .map_err(|err| SourceDestError::build(err, SourceDestErrorKind::SymlinkDir, src, dst))
     }
 
     /// Wrapper for [std::os::windows::fs::symlink_file](https://doc.rust-lang.org/std/os/windows/fs/fn.symlink_file.html)
@@ -16,7 +16,7 @@ pub mod fs {
         let src = src.as_ref();
         let dst = dst.as_ref();
         std::os::windows::fs::symlink_file(src, dst)
-            .map_err(|err| SourceDestError::new(err, SourceDestErrorKind::SymlinkFile, src, dst))
+            .map_err(|err| SourceDestError::build(err, SourceDestErrorKind::SymlinkFile, src, dst))
     }
 
     /// Wrapper for [`std::os::windows::fs::FileExt`](https://doc.rust-lang.org/std/os/windows/fs/trait.FileExt.html).
