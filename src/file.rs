@@ -190,6 +190,12 @@ impl<'a> Read for &'a File {
     }
 }
 
+impl From<File> for fs::File {
+    fn from(file: File) -> Self {
+        file.into_parts().0
+    }
+}
+
 impl Seek for File {
     fn seek(&mut self, pos: std::io::SeekFrom) -> std::io::Result<u64> {
         self.file
