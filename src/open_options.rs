@@ -5,6 +5,7 @@ pub struct OpenOptions(fs::OpenOptions);
 
 impl OpenOptions {
     /// Wrapper for [`std::fs::OpenOptions::new`](https://doc.rust-lang.org/std/fs/struct.OpenOptions.html#method.new)
+    #[allow(clippy::new_without_default)]
     pub fn new() -> Self {
         OpenOptions(fs::OpenOptions::new())
     }

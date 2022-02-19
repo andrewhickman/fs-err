@@ -47,12 +47,15 @@ pub(crate) struct Error {
 }
 
 impl Error {
-    pub fn new(source: io::Error, kind: ErrorKind, path: impl Into<PathBuf>) -> io::Error {
-        Self::_new(source, kind, path.into())
-    }
-
-    fn _new(source: io::Error, kind: ErrorKind, path: PathBuf) -> io::Error {
-        io::Error::new(source.kind(), Self { kind, source, path })
+    pub fn build(source: io::Error, kind: ErrorKind, path: impl Into<PathBuf>) -> io::Error {
+        io::Error::new(
+            source.kind(),
+            Self {
+                kind,
+                source,
+                path: path.into(),
+            },
+        )
     }
 }
 
@@ -131,28 +134,19 @@ pub(crate) struct SourceDestError {
 }
 
 impl SourceDestError {
-    pub fn new(
+    pub fn build(
         source: io::Error,
         kind: SourceDestErrorKind,
         from_path: impl Into<PathBuf>,
         to_path: impl Into<PathBuf>,
-    ) -> io::Error {
-        Self::_new(source, kind, from_path.into(), to_path.into())
-    }
-
-    fn _new(
-        source: io::Error,
-        kind: SourceDestErrorKind,
-        from_path: PathBuf,
-        to_path: PathBuf,
     ) -> io::Error {
         io::Error::new(
             source.kind(),
             Self {
                 kind,
                 source,
-                from_path,
-                to_path,
+                from_path: from_path.into(),
+                to_path: to_path.into(),
             },
         )
     }

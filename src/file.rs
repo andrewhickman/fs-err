@@ -17,12 +17,12 @@ pub struct File {
 // Opens a std File and returns it or an error generator which only needs the path to produce the error.
 // Exists for the `crate::read*` functions so they don't unconditionally build a PathBuf.
 pub(crate) fn open(path: &Path) -> Result<std::fs::File, impl FnOnce(PathBuf) -> io::Error> {
-    fs::File::open(&path).map_err(|err| |path| Error::new(err, ErrorKind::OpenFile, path))
+    fs::File::open(&path).map_err(|err| |path| Error::build(err, ErrorKind::OpenFile, path))
 }
 
 // like `open()` but for `crate::write`
 pub(crate) fn create(path: &Path) -> Result<std::fs::File, impl FnOnce(PathBuf) -> io::Error> {
-    fs::File::create(&path).map_err(|err| |path| Error::new(err, ErrorKind::CreateFile, path))
+    fs::File::create(&path).map_err(|err| |path| Error::build(err, ErrorKind::CreateFile, path))
 }
 
 /// Wrappers for methods from [`std::fs::File`][std::fs::File].
@@ -65,7 +65,7 @@ impl File {
         let path = path.into();
         match options.open(&path) {
             Ok(file) => Ok(File::from_parts(file, path)),
-            Err(source) => Err(Error::new(source, ErrorKind::OpenFile, path)),
+            Err(source) => Err(Error::build(source, ErrorKind::OpenFile, path)),
         }
     }
 
@@ -158,7 +158,7 @@ impl File {
 
     /// Wrap the error in information specific to this `File` object.
     fn error(&self, source: io::Error, kind: ErrorKind) -> io::Error {
-        Error::new(source, kind, &self.path)
+        Error::build(source, kind, &self.path)
     }
 }
 
