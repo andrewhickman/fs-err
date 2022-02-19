@@ -20,19 +20,36 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
       - name: Setup Rust toolchain
-        run: rustup default ${{ matrix.rust_version }}
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ matrix.rust_version }}
+          override: true
+          components: rustfmt, clippy
 
-      - name: Build
-        run: cargo build --all --verbose
+      - name: cargo build
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
 
-      - name: Run tests
-        run: cargo test --all --verbose
+      - name: cargo test
+        uses: actions-rs/cargo@v1
+        with:
+          command: test
 
-      - name: Rustfmt and Clippy
-        run: |
-          cargo fmt -- --check
-          cargo clippy
-        if: matrix.rust_version == 'stable'
+      - name: cargo fmt
+        uses: actions-rs/cargo@v1
+        with:
+          command: fmt
+          args: --all -- --check
+        if:  matrix.rust_version == 'stable'
+
+      - name: cargo clippy
+        uses: actions-rs/cargo@v1
+        with:
+          command: clippy
+          args: --tests -- -D warnings
+        if:  matrix.rust_version == 'stable'
