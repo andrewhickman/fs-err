@@ -10,7 +10,7 @@ pub fn read_dir<P: Into<PathBuf>>(path: P) -> io::Result<ReadDir> {
     let path = path.into();
 
     match fs::read_dir(&path) {
-        Ok(inner) => Ok(ReadDir { inner }),
+        Ok(inner) => Ok(ReadDir { inner, path }),
         Err(source) => Err(Error::build(source, ErrorKind::ReadDir, path)),
     }
 }
@@ -25,13 +25,19 @@ pub fn read_dir<P: Into<PathBuf>>(path: P) -> io::Result<ReadDir> {
 #[derive(Debug)]
 pub struct ReadDir {
     inner: fs::ReadDir,
+    path: PathBuf,
 }
 
 impl Iterator for ReadDir {
     type Item = io::Result<DirEntry>;
 
     fn next(&mut self) -> Option<Self::Item> {
-        Some(self.inner.next()?.map(|inner| DirEntry { inner }))
+        Some(
+            self.inner
+                .next()?
+                .map_err(|source| Error::build(source, ErrorKind::ReadDir, &self.path))
+                .map(|inner| DirEntry { inner }),
+        )
     }
 }
 
