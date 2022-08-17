@@ -2,7 +2,7 @@
 
 ## 2.8.0
 
-* Implement I/O safety traits (`AsFd`/`AsHandle`, `Into<OwnedFd>`/`Into<OwnedHandle`>) for file. This feature requires Rust 1.63 or later and is gated behind the `io_safety` feature flag. ([#39](https://github.com/andrewhickman/fs-err/pull/39))
+* Implement I/O safety traits (`AsFd`/`AsHandle`, `Into<OwnedFd>`/`Into<OwnedHandle>`) for file. This feature requires Rust 1.63 or later and is gated behind the `io_safety` feature flag. ([#39](https://github.com/andrewhickman/fs-err/pull/39))
 
 ## 2.7.0
 
