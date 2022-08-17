@@ -68,6 +68,7 @@ println!("Program config: {:?}", decoded);
 
 #![doc(html_root_url = "https://docs.rs/fs-err/2.8.0")]
 #![deny(missing_debug_implementations, missing_docs)]
+#![cfg_attr(docsrs, feature(doc_cfg))]
 
 mod dir;
 mod errors;
