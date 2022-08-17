@@ -53,3 +53,10 @@ jobs:
           command: clippy
           args: --tests -- -D warnings
         if:  matrix.rust_version == 'stable'
+
+      - name: cargo check --features io_safety
+        uses: actions-rs/cargo@v1
+        with:
+          command: clippy
+          args: --features io_safety
+        if:  matrix.rust_version == 'stable'
