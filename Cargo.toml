@@ -12,6 +12,7 @@ readme = "README.md"
 exclude = [".github", ".gitignore", "README.tpl"]
 
 [dependencies]
+tokio = { version = "1.21", optional = true, default_features = false, features = ["fs"] }
 
 [dev-dependencies]
 serde_json = "1.0.64"

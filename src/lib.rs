@@ -76,6 +76,9 @@ mod file;
 mod open_options;
 pub mod os;
 mod path;
+#[cfg(feature = "tokio")]
+#[cfg_attr(docsrs, doc(cfg(feature = "tokio")))]
+pub mod tokio;
 
 use std::fs;
 use std::io::{self, Read, Write};
