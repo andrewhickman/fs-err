@@ -17,12 +17,12 @@ pub struct File {
 // Opens a std File and returns it or an error generator which only needs the path to produce the error.
 // Exists for the `crate::read*` functions so they don't unconditionally build a PathBuf.
 pub(crate) fn open(path: &Path) -> Result<std::fs::File, impl FnOnce(PathBuf) -> io::Error> {
-    fs::File::open(&path).map_err(|err| |path| Error::build(err, ErrorKind::OpenFile, path))
+    fs::File::open(path).map_err(|err| |path| Error::build(err, ErrorKind::OpenFile, path))
 }
 
 // like `open()` but for `crate::write`
 pub(crate) fn create(path: &Path) -> Result<std::fs::File, impl FnOnce(PathBuf) -> io::Error> {
-    fs::File::create(&path).map_err(|err| |path| Error::build(err, ErrorKind::CreateFile, path))
+    fs::File::create(path).map_err(|err| |path| Error::build(err, ErrorKind::CreateFile, path))
 }
 
 /// Wrappers for methods from [`std::fs::File`][std::fs::File].
@@ -178,13 +178,13 @@ impl Read for File {
 
 impl<'a> Read for &'a File {
     fn read(&mut self, buf: &mut [u8]) -> std::io::Result<usize> {
-        (&(**self).file)
+        (&self.file)
             .read(buf)
             .map_err(|source| self.error(source, ErrorKind::Read))
     }
 
     fn read_vectored(&mut self, bufs: &mut [std::io::IoSliceMut<'_>]) -> std::io::Result<usize> {
-        (&(**self).file)
+        (&self.file)
             .read_vectored(bufs)
             .map_err(|source| self.error(source, ErrorKind::Read))
     }
@@ -206,7 +206,7 @@ impl Seek for File {
 
 impl<'a> Seek for &'a File {
     fn seek(&mut self, pos: std::io::SeekFrom) -> std::io::Result<u64> {
-        (&(**self).file)
+        (&self.file)
             .seek(pos)
             .map_err(|source| self.error(source, ErrorKind::Seek))
     }
@@ -234,19 +234,19 @@ impl Write for File {
 
 impl<'a> Write for &'a File {
     fn write(&mut self, buf: &[u8]) -> std::io::Result<usize> {
-        (&(**self).file)
+        (&self.file)
             .write(buf)
             .map_err(|source| self.error(source, ErrorKind::Write))
     }
 
     fn write_vectored(&mut self, bufs: &[std::io::IoSlice<'_>]) -> std::io::Result<usize> {
-        (&(**self).file)
+        (&self.file)
             .write_vectored(bufs)
             .map_err(|source| self.error(source, ErrorKind::Write))
     }
 
     fn flush(&mut self) -> std::io::Result<()> {
-        (&(**self).file)
+        (&self.file)
             .flush()
             .map_err(|source| self.error(source, ErrorKind::Flush))
     }
