@@ -1,5 +1,6 @@
 use std::fs;
 use std::io::{self, Read, Seek, Write};
+use std::ops::{Deref, DerefMut};
 use std::path::{Path, PathBuf};
 
 use crate::errors::{Error, ErrorKind};
@@ -137,20 +138,6 @@ impl File {
         (self.file, self.path)
     }
 
-    /// Returns a reference to the underlying [`std::fs::File`][std::fs::File].
-    ///
-    /// [std::fs::File]: https://doc.rust-lang.org/stable/std/fs/struct.File.html
-    pub fn file(&self) -> &fs::File {
-        &self.file
-    }
-
-    /// Returns a mutable reference to the underlying [`std::fs::File`][std::fs::File].
-    ///
-    /// [std::fs::File]: https://doc.rust-lang.org/stable/std/fs/struct.File.html
-    pub fn file_mut(&mut self) -> &mut fs::File {
-        &mut self.file
-    }
-
     /// Returns a reference to the path that this file was created with.
     pub fn path(&self) -> &Path {
         &self.path
@@ -159,6 +146,20 @@ impl File {
     /// Wrap the error in information specific to this `File` object.
     fn error(&self, source: io::Error, kind: ErrorKind) -> io::Error {
         Error::build(source, kind, &self.path)
+    }
+}
+
+impl Deref for File {
+    type Target = fs::File;
+
+    fn deref(&self) -> &Self::Target {
+        &self.file
+    }
+}
+
+impl DerefMut for File {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.file
     }
 }
 
@@ -257,12 +258,13 @@ mod unix {
     use crate::os::unix::fs::FileExt;
     use crate::ErrorKind;
     use std::io;
+    use std::ops::Deref;
     use std::os::unix::fs::FileExt as _;
     use std::os::unix::io::{AsRawFd, IntoRawFd, RawFd};
 
     impl AsRawFd for crate::File {
         fn as_raw_fd(&self) -> RawFd {
-            self.file().as_raw_fd()
+            self.deref().as_raw_fd()
         }
     }
 
@@ -274,12 +276,12 @@ mod unix {
 
     impl FileExt for crate::File {
         fn read_at(&self, buf: &mut [u8], offset: u64) -> io::Result<usize> {
-            self.file()
+            self.deref()
                 .read_at(buf, offset)
                 .map_err(|err| self.error(err, ErrorKind::ReadAt))
         }
         fn write_at(&self, buf: &[u8], offset: u64) -> io::Result<usize> {
-            self.file()
+            self.deref()
                 .write_at(buf, offset)
                 .map_err(|err| self.error(err, ErrorKind::WriteAt))
         }
