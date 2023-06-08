@@ -1,6 +1,6 @@
 use std::{fs, io, path::PathBuf};
 #[derive(Clone, Debug)]
-/// Wrapper around [`std::fs::OptionOptions`](https://doc.rust-lang.org/std/fs/struct.OpenOptions.html)
+/// Wrapper around [`std::fs::OpenOptions`](https://doc.rust-lang.org/std/fs/struct.OpenOptions.html)
 pub struct OpenOptions(fs::OpenOptions);
 
 impl OpenOptions {
