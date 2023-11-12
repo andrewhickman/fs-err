@@ -73,10 +73,11 @@ println!("Program config: {:?}", decoded);
 
 ## Minimum Supported Rust Version
 
-Rust **1.40** or higher.
+The oldest rust version this crate is tested on is **1.40**.
 
-The minimum supported Rust version may be changed in the future, but it will be
-done with a minor version bump.
+This crate will generally be conservative with rust version updates. It uses the [`autocfg`](https://crates.io/crates/autocfg) crate to allow wrapping new APIs without incrementing the MSRV.
+
+If the `tokio` feature is enabled, this crate will inherit the MSRV of the selected [`tokio`](https://crates.io/crates/tokio) version.
 
 ## License
 
