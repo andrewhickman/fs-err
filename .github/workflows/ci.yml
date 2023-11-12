@@ -54,7 +54,7 @@ jobs:
           args: --tests -- -D warnings
         if:  matrix.rust_version == 'stable'
 
-      - name: cargo check --features io_safety
+      - name: cargo check --features "io_safety"
         uses: actions-rs/cargo@v1
         with:
           command: check

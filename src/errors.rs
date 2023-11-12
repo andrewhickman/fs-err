@@ -23,6 +23,8 @@ pub(crate) enum ErrorKind {
     Canonicalize,
     ReadLink,
     SymlinkMetadata,
+    #[allow(dead_code)]
+    FileExists,
 
     #[cfg(windows)]
     SeekRead,
@@ -84,6 +86,7 @@ impl fmt::Display for Error {
             Canonicalize => write!(formatter, "failed to canonicalize path `{}`", path),
             ReadLink => write!(formatter, "failed to read symbolic link `{}`", path),
             SymlinkMetadata => write!(formatter, "failed to query metadata of symlink `{}`", path),
+            FileExists => write!(formatter, "failed to check file existance `{}`", path),
 
             #[cfg(windows)]
             SeekRead => write!(formatter, "failed to seek and read from `{}`", path),

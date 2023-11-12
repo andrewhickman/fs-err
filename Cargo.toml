@@ -14,11 +14,14 @@ exclude = [".github", ".gitignore", "README.tpl"]
 [dependencies]
 tokio = { version = "1.21", optional = true, default_features = false, features = ["fs"] }
 
+[build-dependencies]
+autocfg = "1"
+
 [dev-dependencies]
 serde_json = "1.0.64"
 
 [features]
-# Adds I/O safety traits introduced in Rust 1.63
+# Adds I/O safety traits, introduced in Rust 1.63
 io_safety = []
 
 [package.metadata.release]

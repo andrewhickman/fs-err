@@ -1,3 +1,5 @@
+#[allow(unused_imports)]
+use crate::errors::{Error, ErrorKind};
 use std::fs;
 use std::io;
 use std::path::{Path, PathBuf};
@@ -8,6 +10,9 @@ use std::path::{Path, PathBuf};
 //
 // Because no one else can implement it, we can add methods backwards-compatibly.
 pub trait PathExt: crate::Sealed {
+    /// Wrapper for [`Path::try_exists`](https://doc.rust-lang.org/std/path/struct.Path.html#method.try_exists).
+    #[cfg(rustc_1_63)]
+    fn fs_err_try_exists(&self) -> io::Result<bool>;
     /// Wrapper for [`crate::metadata`].
     fn fs_err_metadata(&self) -> io::Result<fs::Metadata>;
     /// Wrapper for [`crate::symlink_metadata`].
@@ -21,6 +26,12 @@ pub trait PathExt: crate::Sealed {
 }
 
 impl PathExt for Path {
+    #[cfg(rustc_1_63)]
+    fn fs_err_try_exists(&self) -> io::Result<bool> {
+        self.try_exists()
+            .map_err(|source| Error::build(source, ErrorKind::FileExists, self))
+    }
+
     fn fs_err_metadata(&self) -> io::Result<fs::Metadata> {
         crate::metadata(self)
     }
