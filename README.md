@@ -71,6 +71,14 @@ println!("Program config: {:?}", decoded);
 [std::io::Read]: https://doc.rust-lang.org/stable/std/io/trait.Read.html
 [serde_json]: https://crates.io/crates/serde_json
 
+## Minimum Supported Rust Version
+
+The oldest rust version this crate is tested on is **1.40**.
+
+This crate will generally be conservative with rust version updates. It uses the [`autocfg`](https://crates.io/crates/autocfg) crate to allow wrapping new APIs without incrementing the MSRV.
+
+If the `tokio` feature is enabled, this crate will inherit the MSRV of the selected [`tokio`](https://crates.io/crates/tokio) version.
+
 ## License
 
 Licensed under either of
