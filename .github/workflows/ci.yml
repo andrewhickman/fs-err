@@ -15,7 +15,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
-        rust_version: [stable, "1.40.0"]
+        rust_version: [stable, beta, 1.40.0]
 
     runs-on: ${{ matrix.os }}
 
@@ -23,12 +23,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Setup Rust toolchain
-        uses: actions-rs/toolchain@v1
+      - uses: dtolnay/rust-toolchain@v1
         with:
           toolchain: ${{ matrix.rust_version }}
-          override: true
-          components: rustfmt, clippy
+
+      # Skip cargo update for MSRV validation build
+      - run: cargo update
+        if: ${{ matrix.rust == 'stable' || matrix.rust == 'beta' }}
 
       - name: cargo build
         uses: actions-rs/cargo@v1

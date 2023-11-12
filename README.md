@@ -71,6 +71,13 @@ println!("Program config: {:?}", decoded);
 [std::io::Read]: https://doc.rust-lang.org/stable/std/io/trait.Read.html
 [serde_json]: https://crates.io/crates/serde_json
 
+## Minimum Supported Rust Version
+
+Rust **1.40** or higher.
+
+The minimum supported Rust version may be changed in the future, but it will be
+done with a minor version bump.
+
 ## License
 
 Licensed under either of
