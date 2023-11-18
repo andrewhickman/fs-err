@@ -203,7 +203,7 @@ pub async fn symlink(src: impl AsRef<Path>, dst: impl AsRef<Path>) -> io::Result
 /// Wrapper for [`tokio::fs::symlink_dir`].
 #[cfg(windows)]
 #[cfg_attr(docsrs, doc(cfg(feature = "tokio")))]
-pub async fn symlink(src: impl AsRef<Path>, dst: impl AsRef<Path>) -> io::Result<()> {
+pub async fn symlink_dir(src: impl AsRef<Path>, dst: impl AsRef<Path>) -> io::Result<()> {
     let (src, dst) = (src.as_ref(), dst.as_ref());
     tokio::fs::symlink_dir(src, dst)
         .await
