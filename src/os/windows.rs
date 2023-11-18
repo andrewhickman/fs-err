@@ -3,6 +3,9 @@ pub mod fs {
     use crate::{SourceDestError, SourceDestErrorKind};
     use std::io;
     use std::path::Path;
+
+    /// Creates a new symlink to a directory on the filesystem.
+    ///
     /// Wrapper for [std::os::windows::fs::symlink_dir](https://doc.rust-lang.org/std/os/windows/fs/fn.symlink_dir.html)
     pub fn symlink_dir<P: AsRef<Path>, Q: AsRef<Path>>(src: P, dst: Q) -> io::Result<()> {
         let src = src.as_ref();
@@ -11,6 +14,8 @@ pub mod fs {
             .map_err(|err| SourceDestError::build(err, SourceDestErrorKind::SymlinkDir, src, dst))
     }
 
+    /// Creates a new symlink to a non-directory file on the filesystem.
+    ///
     /// Wrapper for [std::os::windows::fs::symlink_file](https://doc.rust-lang.org/std/os/windows/fs/fn.symlink_file.html)
     pub fn symlink_file<P: AsRef<Path>, Q: AsRef<Path>>(src: P, dst: Q) -> io::Result<()> {
         let src = src.as_ref();

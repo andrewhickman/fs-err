@@ -91,6 +91,8 @@ pub use file::*;
 pub use open_options::OpenOptions;
 pub use path::PathExt;
 
+/// Read the entire contents of a file into a bytes vector.
+///
 /// Wrapper for [`fs::read`](https://doc.rust-lang.org/stable/std/fs/fn.read.html).
 pub fn read<P: AsRef<Path>>(path: P) -> io::Result<Vec<u8>> {
     let path = path.as_ref();
@@ -101,6 +103,8 @@ pub fn read<P: AsRef<Path>>(path: P) -> io::Result<Vec<u8>> {
     Ok(bytes)
 }
 
+/// Read the entire contents of a file into a string.
+///
 /// Wrapper for [`fs::read_to_string`](https://doc.rust-lang.org/stable/std/fs/fn.read_to_string.html).
 pub fn read_to_string<P: AsRef<Path>>(path: P) -> io::Result<String> {
     let path = path.as_ref();
@@ -111,6 +115,8 @@ pub fn read_to_string<P: AsRef<Path>>(path: P) -> io::Result<String> {
     Ok(string)
 }
 
+/// Write a slice as the entire contents of a file.
+///
 /// Wrapper for [`fs::write`](https://doc.rust-lang.org/stable/std/fs/fn.write.html).
 pub fn write<P: AsRef<Path>, C: AsRef<[u8]>>(path: P, contents: C) -> io::Result<()> {
     let path = path.as_ref();
@@ -120,6 +126,9 @@ pub fn write<P: AsRef<Path>, C: AsRef<[u8]>>(path: P, contents: C) -> io::Result
         .map_err(|err| Error::build(err, ErrorKind::Write, path))
 }
 
+/// Copies the contents of one file to another. This function will also copy the
+/// permission bits of the original file to the destination file.
+///
 /// Wrapper for [`fs::copy`](https://doc.rust-lang.org/stable/std/fs/fn.copy.html).
 pub fn copy<P, Q>(from: P, to: Q) -> io::Result<u64>
 where
@@ -132,6 +141,8 @@ where
         .map_err(|source| SourceDestError::build(source, SourceDestErrorKind::Copy, from, to))
 }
 
+/// Creates a new, empty directory at the provided path.
+///
 /// Wrapper for [`fs::create_dir`](https://doc.rust-lang.org/stable/std/fs/fn.create_dir.html).
 pub fn create_dir<P>(path: P) -> io::Result<()>
 where
@@ -141,6 +152,8 @@ where
     fs::create_dir(path).map_err(|source| Error::build(source, ErrorKind::CreateDir, path))
 }
 
+/// Recursively create a directory and all of its parent components if they are missing.
+///
 /// Wrapper for [`fs::create_dir_all`](https://doc.rust-lang.org/stable/std/fs/fn.create_dir_all.html).
 pub fn create_dir_all<P>(path: P) -> io::Result<()>
 where
@@ -150,6 +163,8 @@ where
     fs::create_dir_all(path).map_err(|source| Error::build(source, ErrorKind::CreateDir, path))
 }
 
+/// Removes an empty directory.
+///
 /// Wrapper for [`fs::remove_dir`](https://doc.rust-lang.org/stable/std/fs/fn.remove_dir.html).
 pub fn remove_dir<P>(path: P) -> io::Result<()>
 where
@@ -159,6 +174,8 @@ where
     fs::remove_dir(path).map_err(|source| Error::build(source, ErrorKind::RemoveDir, path))
 }
 
+/// Removes a directory at this path, after removing all its contents. Use carefully!
+///
 /// Wrapper for [`fs::remove_dir_all`](https://doc.rust-lang.org/stable/std/fs/fn.remove_dir_all.html).
 pub fn remove_dir_all<P>(path: P) -> io::Result<()>
 where
@@ -168,6 +185,8 @@ where
     fs::remove_dir_all(path).map_err(|source| Error::build(source, ErrorKind::RemoveDir, path))
 }
 
+/// Removes a file from the filesystem.
+///
 /// Wrapper for [`fs::remove_file`](https://doc.rust-lang.org/stable/std/fs/fn.remove_file.html).
 pub fn remove_file<P>(path: P) -> io::Result<()>
 where
@@ -177,18 +196,25 @@ where
     fs::remove_file(path).map_err(|source| Error::build(source, ErrorKind::RemoveFile, path))
 }
 
+/// Given a path, query the file system to get information about a file, directory, etc.
+///
 /// Wrapper for [`fs::metadata`](https://doc.rust-lang.org/stable/std/fs/fn.metadata.html).
 pub fn metadata<P: AsRef<Path>>(path: P) -> io::Result<fs::Metadata> {
     let path = path.as_ref();
     fs::metadata(path).map_err(|source| Error::build(source, ErrorKind::Metadata, path))
 }
 
+/// Returns the canonical, absolute form of a path with all intermediate components
+/// normalized and symbolic links resolved.
+///
 /// Wrapper for [`fs::canonicalize`](https://doc.rust-lang.org/stable/std/fs/fn.canonicalize.html).
 pub fn canonicalize<P: AsRef<Path>>(path: P) -> io::Result<PathBuf> {
     let path = path.as_ref();
     fs::canonicalize(path).map_err(|source| Error::build(source, ErrorKind::Canonicalize, path))
 }
 
+/// Creates a new hard link on the filesystem.
+///
 /// Wrapper for [`fs::hard_link`](https://doc.rust-lang.org/stable/std/fs/fn.hard_link.html).
 pub fn hard_link<P: AsRef<Path>, Q: AsRef<Path>>(src: P, dst: Q) -> io::Result<()> {
     let src = src.as_ref();
@@ -197,12 +223,16 @@ pub fn hard_link<P: AsRef<Path>, Q: AsRef<Path>>(src: P, dst: Q) -> io::Result<(
         .map_err(|source| SourceDestError::build(source, SourceDestErrorKind::HardLink, src, dst))
 }
 
+/// Reads a symbolic link, returning the file that the link points to.
+///
 /// Wrapper for [`fs::read_link`](https://doc.rust-lang.org/stable/std/fs/fn.read_link.html).
 pub fn read_link<P: AsRef<Path>>(path: P) -> io::Result<PathBuf> {
     let path = path.as_ref();
     fs::read_link(path).map_err(|source| Error::build(source, ErrorKind::ReadLink, path))
 }
 
+/// Rename a file or directory to a new name, replacing the original file if to already exists.
+///
 /// Wrapper for [`fs::rename`](https://doc.rust-lang.org/stable/std/fs/fn.rename.html).
 pub fn rename<P: AsRef<Path>, Q: AsRef<Path>>(from: P, to: Q) -> io::Result<()> {
     let from = from.as_ref();
@@ -222,6 +252,8 @@ pub fn soft_link<P: AsRef<Path>, Q: AsRef<Path>>(src: P, dst: Q) -> io::Result<(
         .map_err(|source| SourceDestError::build(source, SourceDestErrorKind::SoftLink, src, dst))
 }
 
+/// Query the metadata about a file without following symlinks.
+///
 /// Wrapper for [`fs::symlink_metadata`](https://doc.rust-lang.org/stable/std/fs/fn.symlink_metadata.html).
 pub fn symlink_metadata<P: AsRef<Path>>(path: P) -> io::Result<fs::Metadata> {
     let path = path.as_ref();
@@ -229,6 +261,8 @@ pub fn symlink_metadata<P: AsRef<Path>>(path: P) -> io::Result<fs::Metadata> {
         .map_err(|source| Error::build(source, ErrorKind::SymlinkMetadata, path))
 }
 
+/// Changes the permissions found on a file or a directory.
+///
 /// Wrapper for [`fs::set_permissions`](https://doc.rust-lang.org/stable/std/fs/fn.set_permissions.html).
 pub fn set_permissions<P: AsRef<Path>>(path: P, perm: fs::Permissions) -> io::Result<()> {
     let path = path.as_ref();

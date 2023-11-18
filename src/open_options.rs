@@ -4,48 +4,64 @@ use std::{fs, io, path::PathBuf};
 pub struct OpenOptions(fs::OpenOptions);
 
 impl OpenOptions {
+    /// Creates a blank new set of options ready for configuration.
+    ///
     /// Wrapper for [`std::fs::OpenOptions::new`](https://doc.rust-lang.org/std/fs/struct.OpenOptions.html#method.new)
     #[allow(clippy::new_without_default)]
     pub fn new() -> Self {
         OpenOptions(fs::OpenOptions::new())
     }
 
+    /// Sets the option for read access.
+    ///
     /// Wrapper for [`std::fs::OpenOptions::read`](https://doc.rust-lang.org/std/fs/struct.OpenOptions.html#method.read)
     pub fn read(&mut self, read: bool) -> &mut Self {
         self.0.read(read);
         self
     }
 
+    /// Sets the option for write access.
+    ///
     /// Wrapper for [`std::fs::OpenOptions::write`](https://doc.rust-lang.org/std/fs/struct.OpenOptions.html#method.write)
     pub fn write(&mut self, write: bool) -> &mut Self {
         self.0.write(write);
         self
     }
 
+    /// Sets the option for the append mode.
+    ///
     /// Wrapper for [`std::fs::OpenOptions::append`](https://doc.rust-lang.org/std/fs/struct.OpenOptions.html#method.append)
     pub fn append(&mut self, append: bool) -> &mut Self {
         self.0.append(append);
         self
     }
 
+    /// Sets the option for truncating a previous file.
+    ///
     /// Wrapper for [`std::fs::OpenOptions::truncate`](https://doc.rust-lang.org/std/fs/struct.OpenOptions.html#method.truncate)
     pub fn truncate(&mut self, truncate: bool) -> &mut Self {
         self.0.truncate(truncate);
         self
     }
 
+    /// Sets the option to create a new file, or open it if it already exists.
+    ///
     /// Wrapper for [`std::fs::OpenOptions::create`](https://doc.rust-lang.org/std/fs/struct.OpenOptions.html#method.create)
     pub fn create(&mut self, create: bool) -> &mut Self {
         self.0.create(create);
         self
     }
 
+    /// Sets the option to create a new file, failing if it already exists.
+    ///
     /// Wrapper for [`std::fs::OpenOptions::create_new`](https://doc.rust-lang.org/std/fs/struct.OpenOptions.html#method.create_new)
     pub fn create_new(&mut self, create_new: bool) -> &mut Self {
         self.0.create_new(create_new);
         self
     }
 
+    /// Opens a file at `path` with the options specified by `self`.
+    ///
     /// Wrapper for [`std::fs::OpenOptions::open`](https://doc.rust-lang.org/std/fs/struct.OpenOptions.html#method.open)
     pub fn open<P>(&self, path: P) -> io::Result<crate::File>
     where
