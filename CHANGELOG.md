@@ -1,5 +1,12 @@
 # fs-err Changelog
 
+## 2.11.0
+
+* Added the first line of the standard library documentation to each function's rustdocs, to make them more useful in IDEs ([#50](https://github.com/andrewhickman/fs-err/issues/45))
+* Fixed the wrapper for `tokio::fs::symlink_dir()` on Windows being incorrectly named `symlink`. The old function is now deprecated and will be removed in the next breaking release.
+
+## 2.10.0
+
 * Add `fs_err_try_exists` to `std::path::Path` via extension trait. This feature requires Rust 1.63 or later. ([#48](https://github.com/andrewhickman/fs-err/pull/48))
 
 ## 2.9.0
