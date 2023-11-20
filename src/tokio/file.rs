@@ -19,6 +19,8 @@ pub struct File {
 }
 
 impl File {
+    /// Attempts to open a file in read-only mode.
+    ///
     /// Wrapper for [`tokio::fs::File::open`].
     pub async fn open(path: impl Into<PathBuf>) -> io::Result<File> {
         let path = path.into();
@@ -28,6 +30,8 @@ impl File {
         Ok(File::from_parts(f, path))
     }
 
+    /// Opens a file in write-only mode.
+    ///
     /// Wrapper for [`tokio::fs::File::create`].
     pub async fn create(path: impl Into<PathBuf>) -> io::Result<File> {
         let path = path.into();
@@ -37,12 +41,16 @@ impl File {
         }
     }
 
+    /// Converts a [`crate::File`] to a [`tokio::fs::File`].
+    ///
     /// Wrapper for [`tokio::fs::File::from_std`].
     pub fn from_std(std: crate::File) -> File {
         let (std, path) = std.into_parts();
         File::from_parts(TokioFile::from_std(std), path)
     }
 
+    /// Attempts to sync all OS-internal metadata to disk.
+    ///
     /// Wrapper for [`tokio::fs::File::sync_all`].
     pub async fn sync_all(&self) -> io::Result<()> {
         self.tokio
@@ -51,6 +59,9 @@ impl File {
             .map_err(|err| self.error(err, ErrorKind::SyncFile))
     }
 
+    /// This function is similar to `sync_all`, except that it may not
+    /// synchronize file metadata to the filesystem.
+    ///
     /// Wrapper for [`tokio::fs::File::sync_data`].
     pub async fn sync_data(&self) -> io::Result<()> {
         self.tokio
@@ -59,6 +70,8 @@ impl File {
             .map_err(|err| self.error(err, ErrorKind::SyncFile))
     }
 
+    /// Truncates or extends the underlying file, updating the size of this file to become size.
+    ///
     /// Wrapper for [`tokio::fs::File::set_len`].
     pub async fn set_len(&self, size: u64) -> io::Result<()> {
         self.tokio
@@ -67,6 +80,8 @@ impl File {
             .map_err(|err| self.error(err, ErrorKind::SetLen))
     }
 
+    /// Queries metadata about the underlying file.
+    ///
     /// Wrapper for [`tokio::fs::File::metadata`].
     pub async fn metadata(&self) -> io::Result<Metadata> {
         self.tokio
@@ -75,6 +90,10 @@ impl File {
             .map_err(|err| self.error(err, ErrorKind::Metadata))
     }
 
+    /// Creates a new `File` instance that shares the same underlying file handle
+    /// as the existing `File` instance. Reads, writes, and seeks will affect both
+    /// `File` instances simultaneously.
+    ///
     /// Wrapper for [`tokio::fs::File::try_clone`].
     pub async fn try_clone(&self) -> io::Result<File> {
         match self.tokio.try_clone().await {
@@ -83,11 +102,16 @@ impl File {
         }
     }
 
+    /// Destructures `File` into a [`crate::File`]. This function is async to allow any
+    /// in-flight operations to complete.
+    ///
     /// Wrapper for [`tokio::fs::File::into_std`].
     pub async fn into_std(self) -> crate::File {
         crate::File::from_parts(self.tokio.into_std().await, self.path)
     }
 
+    /// Tries to immediately destructure `File` into a [`crate::File`].
+    ///
     /// Wrapper for [`tokio::fs::File::try_into_std`].
     pub fn try_into_std(self) -> Result<crate::File, File> {
         match self.tokio.try_into_std() {
@@ -96,6 +120,8 @@ impl File {
         }
     }
 
+    /// Changes the permissions on the underlying file.
+    ///
     /// Wrapper for [`tokio::fs::File::set_permissions`].
     pub async fn set_permissions(&self, perm: Permissions) -> io::Result<()> {
         self.tokio

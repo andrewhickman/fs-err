@@ -6,6 +6,8 @@ pub mod fs {
     use crate::SourceDestError;
     use crate::SourceDestErrorKind;
 
+    /// Creates a new symbolic link on the filesystem.
+    ///
     /// Wrapper for [`std::os::unix::fs::symlink`](https://doc.rust-lang.org/std/os/unix/fs/fn.symlink.html)
     pub fn symlink<P: AsRef<Path>, Q: AsRef<Path>>(src: P, dst: Q) -> io::Result<()> {
         let src = src.as_ref();
