@@ -1,7 +1,7 @@
 [package]
 name = "fs-err"
 description = "A drop-in replacement for std::fs with more helpful error messages."
-version = "2.10.0"
+version = "2.11.0"
 authors = ["Andrew Hickman <andrew.hickman1@sky.com>"]
 edition = "2018"
 repository = "https://github.com/andrewhickman/fs-err"
