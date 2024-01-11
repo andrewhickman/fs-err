@@ -68,35 +68,119 @@ impl fmt::Display for Error {
         let path = self.path.display();
 
         match self.kind {
-            OpenFile => write!(formatter, "failed to open file `{}`", path),
-            CreateFile => write!(formatter, "failed to create file `{}`", path),
-            CreateDir => write!(formatter, "failed to create directory `{}`", path),
-            SyncFile => write!(formatter, "failed to sync file `{}`", path),
-            SetLen => write!(formatter, "failed to set length of file `{}`", path),
-            Metadata => write!(formatter, "failed to query metadata of file `{}`", path),
-            Clone => write!(formatter, "failed to clone handle for file `{}`", path),
-            SetPermissions => write!(formatter, "failed to set permissions for file `{}`", path),
-            Read => write!(formatter, "failed to read from file `{}`", path),
-            Seek => write!(formatter, "failed to seek in file `{}`", path),
-            Write => write!(formatter, "failed to write to file `{}`", path),
-            Flush => write!(formatter, "failed to flush file `{}`", path),
-            ReadDir => write!(formatter, "failed to read directory `{}`", path),
-            RemoveFile => write!(formatter, "failed to remove file `{}`", path),
-            RemoveDir => write!(formatter, "failed to remove directory `{}`", path),
-            Canonicalize => write!(formatter, "failed to canonicalize path `{}`", path),
-            ReadLink => write!(formatter, "failed to read symbolic link `{}`", path),
-            SymlinkMetadata => write!(formatter, "failed to query metadata of symlink `{}`", path),
-            FileExists => write!(formatter, "failed to check file existance `{}`", path),
+            OpenFile => write!(formatter, "failed to open file `{}`: {}", path, self.source),
+            CreateFile => write!(
+                formatter,
+                "failed to create file `{}`: {}",
+                path, self.source
+            ),
+            CreateDir => write!(
+                formatter,
+                "failed to create directory `{}`: {}",
+                path, self.source
+            ),
+            SyncFile => write!(formatter, "failed to sync file `{}`: {}", path, self.source),
+            SetLen => write!(
+                formatter,
+                "failed to set length of file `{}`: {}",
+                path, self.source
+            ),
+            Metadata => write!(
+                formatter,
+                "failed to query metadata of file `{}`: {}",
+                path, self.source
+            ),
+            Clone => write!(
+                formatter,
+                "failed to clone handle for file `{}`: {}",
+                path, self.source
+            ),
+            SetPermissions => write!(
+                formatter,
+                "failed to set permissions for file `{}`: {}",
+                path, self.source
+            ),
+            Read => write!(
+                formatter,
+                "failed to read from file `{}`: {}",
+                path, self.source
+            ),
+            Seek => write!(
+                formatter,
+                "failed to seek in file `{}`: {}",
+                path, self.source
+            ),
+            Write => write!(
+                formatter,
+                "failed to write to file `{}`: {}",
+                path, self.source
+            ),
+            Flush => write!(
+                formatter,
+                "failed to flush file `{}`: {}",
+                path, self.source
+            ),
+            ReadDir => write!(
+                formatter,
+                "failed to read directory `{}`: {}",
+                path, self.source
+            ),
+            RemoveFile => write!(
+                formatter,
+                "failed to remove file `{}`: {}",
+                path, self.source
+            ),
+            RemoveDir => write!(
+                formatter,
+                "failed to remove directory `{}`: {}",
+                path, self.source
+            ),
+            Canonicalize => write!(
+                formatter,
+                "failed to canonicalize path `{}`: {}",
+                path, self.source
+            ),
+            ReadLink => write!(
+                formatter,
+                "failed to read symbolic link `{}`: {}",
+                path, self.source
+            ),
+            SymlinkMetadata => write!(
+                formatter,
+                "failed to query metadata of symlink `{}`: {}",
+                path, self.source
+            ),
+            FileExists => write!(
+                formatter,
+                "failed to check file existance `{}`: {}",
+                path, self.source
+            ),
 
             #[cfg(windows)]
-            SeekRead => write!(formatter, "failed to seek and read from `{}`", path),
+            SeekRead => write!(
+                formatter,
+                "failed to seek and read from `{}`: {}",
+                path, self.source
+            ),
             #[cfg(windows)]
-            SeekWrite => write!(formatter, "failed to seek and write to `{}`", path),
+            SeekWrite => write!(
+                formatter,
+                "failed to seek and write to `{}`: {}",
+                path, self.source
+            ),
 
             #[cfg(unix)]
-            ReadAt => write!(formatter, "failed to read with offset from `{}`", path),
+            ReadAt => write!(
+                formatter,
+                "failed to read with offset from `{}`: {}",
+                path, self.source
+            ),
             #[cfg(unix)]
-            WriteAt => write!(formatter, "failed to write with offset to `{}`", path),
+            WriteAt => write!(
+                formatter,
+                "failed to write with offset to `{}`: {}",
+                path, self.source
+            ),
         }
     }
 }
@@ -161,30 +245,58 @@ impl fmt::Display for SourceDestError {
         let to = self.to_path.display();
         match self.kind {
             SourceDestErrorKind::Copy => {
-                write!(formatter, "failed to copy file from {} to {}", from, to)
+                write!(
+                    formatter,
+                    "failed to copy file from {} to {}: {}",
+                    from, to, self.source
+                )
             }
             SourceDestErrorKind::HardLink => {
-                write!(formatter, "failed to hardlink file from {} to {}", from, to)
+                write!(
+                    formatter,
+                    "failed to hardlink file from {} to {}: {}",
+                    from, to, self.source
+                )
             }
             SourceDestErrorKind::Rename => {
-                write!(formatter, "failed to rename file from {} to {}", from, to)
+                write!(
+                    formatter,
+                    "failed to rename file from {} to {}: {}",
+                    from, to, self.source
+                )
             }
             SourceDestErrorKind::SoftLink => {
-                write!(formatter, "failed to softlink file from {} to {}", from, to)
+                write!(
+                    formatter,
+                    "failed to softlink file from {} to {}: {}",
+                    from, to, self.source
+                )
             }
 
             #[cfg(unix)]
             SourceDestErrorKind::Symlink => {
-                write!(formatter, "failed to symlink file from {} to {}", from, to)
+                write!(
+                    formatter,
+                    "failed to symlink file from {} to {}: {}",
+                    from, to, self.source
+                )
             }
 
             #[cfg(windows)]
             SourceDestErrorKind::SymlinkFile => {
-                write!(formatter, "failed to symlink file from {} to {}", from, to)
+                write!(
+                    formatter,
+                    "failed to symlink file from {} to {}: {}",
+                    from, to, self.source
+                )
             }
             #[cfg(windows)]
             SourceDestErrorKind::SymlinkDir => {
-                write!(formatter, "failed to symlink dir from {} to {}", from, to)
+                write!(
+                    formatter,
+                    "failed to symlink dir from {} to {}: {}",
+                    from, to, self.source
+                )
             }
         }
     }
