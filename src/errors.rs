@@ -63,40 +63,42 @@ impl Error {
 
 impl fmt::Display for Error {
     fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-        use ErrorKind::*;
+        use ErrorKind as E;
 
         let path = self.path.display();
 
         match self.kind {
-            OpenFile => write!(formatter, "failed to open file `{}`", path),
-            CreateFile => write!(formatter, "failed to create file `{}`", path),
-            CreateDir => write!(formatter, "failed to create directory `{}`", path),
-            SyncFile => write!(formatter, "failed to sync file `{}`", path),
-            SetLen => write!(formatter, "failed to set length of file `{}`", path),
-            Metadata => write!(formatter, "failed to query metadata of file `{}`", path),
-            Clone => write!(formatter, "failed to clone handle for file `{}`", path),
-            SetPermissions => write!(formatter, "failed to set permissions for file `{}`", path),
-            Read => write!(formatter, "failed to read from file `{}`", path),
-            Seek => write!(formatter, "failed to seek in file `{}`", path),
-            Write => write!(formatter, "failed to write to file `{}`", path),
-            Flush => write!(formatter, "failed to flush file `{}`", path),
-            ReadDir => write!(formatter, "failed to read directory `{}`", path),
-            RemoveFile => write!(formatter, "failed to remove file `{}`", path),
-            RemoveDir => write!(formatter, "failed to remove directory `{}`", path),
-            Canonicalize => write!(formatter, "failed to canonicalize path `{}`", path),
-            ReadLink => write!(formatter, "failed to read symbolic link `{}`", path),
-            SymlinkMetadata => write!(formatter, "failed to query metadata of symlink `{}`", path),
-            FileExists => write!(formatter, "failed to check file existance `{}`", path),
+            E::OpenFile => write!(formatter, "failed to open file `{}`", path),
+            E::CreateFile => write!(formatter, "failed to create file `{}`", path),
+            E::CreateDir => write!(formatter, "failed to create directory `{}`", path),
+            E::SyncFile => write!(formatter, "failed to sync file `{}`", path),
+            E::SetLen => write!(formatter, "failed to set length of file `{}`", path),
+            E::Metadata => write!(formatter, "failed to query metadata of file `{}`", path),
+            E::Clone => write!(formatter, "failed to clone handle for file `{}`", path),
+            E::SetPermissions => write!(formatter, "failed to set permissions for file `{}`", path),
+            E::Read => write!(formatter, "failed to read from file `{}`", path),
+            E::Seek => write!(formatter, "failed to seek in file `{}`", path),
+            E::Write => write!(formatter, "failed to write to file `{}`", path),
+            E::Flush => write!(formatter, "failed to flush file `{}`", path),
+            E::ReadDir => write!(formatter, "failed to read directory `{}`", path),
+            E::RemoveFile => write!(formatter, "failed to remove file `{}`", path),
+            E::RemoveDir => write!(formatter, "failed to remove directory `{}`", path),
+            E::Canonicalize => write!(formatter, "failed to canonicalize path `{}`", path),
+            E::ReadLink => write!(formatter, "failed to read symbolic link `{}`", path),
+            E::SymlinkMetadata => {
+                write!(formatter, "failed to query metadata of symlink `{}`", path)
+            }
+            E::FileExists => write!(formatter, "failed to check file existance `{}`", path),
 
             #[cfg(windows)]
-            SeekRead => write!(formatter, "failed to seek and read from `{}`", path),
+            E::SeekRead => write!(formatter, "failed to seek and read from `{}`", path),
             #[cfg(windows)]
-            SeekWrite => write!(formatter, "failed to seek and write to `{}`", path),
+            E::SeekWrite => write!(formatter, "failed to seek and write to `{}`", path),
 
             #[cfg(unix)]
-            ReadAt => write!(formatter, "failed to read with offset from `{}`", path),
+            E::ReadAt => write!(formatter, "failed to read with offset from `{}`", path),
             #[cfg(unix)]
-            WriteAt => write!(formatter, "failed to write with offset to `{}`", path),
+            E::WriteAt => write!(formatter, "failed to write with offset to `{}`", path),
         }
     }
 }
