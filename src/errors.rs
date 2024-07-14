@@ -88,7 +88,7 @@ impl fmt::Display for Error {
             E::SymlinkMetadata => {
                 write!(formatter, "failed to query metadata of symlink `{}`", path)
             }
-            E::FileExists => write!(formatter, "failed to check file existance `{}`", path),
+            E::FileExists => write!(formatter, "failed to check file existence `{}`", path),
 
             #[cfg(windows)]
             E::SeekRead => write!(formatter, "failed to seek and read from `{}`", path),
