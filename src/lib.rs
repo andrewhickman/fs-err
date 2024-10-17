@@ -26,6 +26,10 @@ failed to open file `does not exist.txt`
     caused by: The system cannot find the file specified. (os error 2)
 ```
 
+> Note: To bypass displaying the original error message you can enable the `anyhow` feature.
+> When the `anyhow` feature is enabled `Error::source()` will return `Some` and the original
+> error will not be `Display`-ed via fs-err.
+
 # Usage
 
 fs-err's API is the same as [`std::fs`][std::fs], so migrating code to use it is easy.

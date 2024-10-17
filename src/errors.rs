@@ -99,7 +99,12 @@ impl fmt::Display for Error {
             E::ReadAt => write!(formatter, "failed to read with offset from `{}`", path),
             #[cfg(unix)]
             E::WriteAt => write!(formatter, "failed to write with offset to `{}`", path),
-        }
+        }?;
+
+        #[cfg(not(feature = "anyhow"))]
+        write!(formatter, "    caused by: {}", self.source)?;
+
+        Ok(())
     }
 }
 
@@ -108,6 +113,12 @@ impl StdError for Error {
         self.source()
     }
 
+    #[cfg(not(feature = "anyhow"))]
+    fn source(&self) -> Option<&(dyn StdError + 'static)> {
+        None
+    }
+
+    #[cfg(feature = "anyhow")]
     fn source(&self) -> Option<&(dyn StdError + 'static)> {
         Some(&self.source)
     }
@@ -188,7 +199,12 @@ impl fmt::Display for SourceDestError {
             SourceDestErrorKind::SymlinkDir => {
                 write!(formatter, "failed to symlink dir from {} to {}", from, to)
             }
-        }
+        }?;
+
+        #[cfg(not(feature = "anyhow"))]
+        write!(formatter, "    caused by: {}", self.source)?;
+
+        Ok(())
     }
 }
 
@@ -197,6 +213,12 @@ impl StdError for SourceDestError {
         self.source()
     }
 
+    #[cfg(not(feature = "anyhow"))]
+    fn source(&self) -> Option<&(dyn StdError + 'static)> {
+        None
+    }
+
+    #[cfg(feature = "anyhow")]
     fn source(&self) -> Option<&(dyn StdError + 'static)> {
         Some(&self.source)
     }

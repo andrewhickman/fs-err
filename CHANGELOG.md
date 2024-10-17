@@ -1,5 +1,7 @@
 # fs-err Changelog
 
+* Change errors to output original `std::io::Error` information Display by default. This functionality can be disabled for [anyhow](https://docs.rs/anyhow/latest/anyhow/) users by using the new feature `anyhow` ([#60](https://github.com/andrewhickman/fs-err/pull/60)).
+
 ## 2.11.0
 
 * Added the first line of the standard library documentation to each function's rustdocs, to make them more useful in IDEs ([#50](https://github.com/andrewhickman/fs-err/issues/45))
