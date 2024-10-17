@@ -12,7 +12,7 @@ readme = "README.md"
 exclude = [".github", ".gitignore", "README.tpl"]
 
 [dependencies]
-tokio = { version = "1.21", optional = true, default_features = false, features = ["fs"] }
+tokio = { version = "1.21", optional = true, default-features = false, features = ["fs"] }
 
 [build-dependencies]
 autocfg = "1"
