@@ -28,7 +28,6 @@ jobs:
           toolchain: ${{ matrix.rust_version }}
 
       - run: cargo update
-        if: ${{ matrix.rust == 'stable' || matrix.rust == 'beta' }}
 
       - name: cargo build
         uses: actions-rs/cargo@v1
