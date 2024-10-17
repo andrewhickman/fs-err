@@ -28,7 +28,7 @@ jobs:
           toolchain: ${{ matrix.rust_version }}
 
       - run: cargo update
-        if: ${{ matrix.rust == 'stable' || matrix.rust == 'beta' }}
+        if: ${{ matrix.rust_version == 'stable' || matrix.rust_version == 'beta' }}
 
       - name: cargo build
         uses: actions-rs/cargo@v1
@@ -59,11 +59,11 @@ jobs:
         with:
           command: check
           args: --features io_safety
-        if: ${{ matrix.rust == 'stable' || matrix.rust == 'beta' }}
+        if: ${{ matrix.rust_version == 'stable' || matrix.rust_version == 'beta' }}
 
       - name: cargo check --features tokio
         uses: actions-rs/cargo@v1
         with:
           command: check
           args: --features tokio
-        if: ${{ matrix.rust == 'stable' || matrix.rust == 'beta' }}
+        if: ${{ matrix.rust_version == 'stable' || matrix.rust_version == 'beta' }}
