@@ -68,8 +68,8 @@ jobs:
           args: --features tokio
         if: ${{ matrix.rust_version == 'stable' || matrix.rust_version == 'beta' }}
 
-      - name: cargo check --features anyhow
+      - name: cargo check --features custom_caused_by
         uses: actions-rs/cargo@v1
         with:
           command: check
-          args: --features anyhow
+          args: --features custom_caused_by

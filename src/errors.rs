@@ -101,7 +101,7 @@ impl fmt::Display for Error {
             E::WriteAt => write!(formatter, "failed to write with offset to `{}`", path),
         }?;
 
-        #[cfg(not(feature = "anyhow"))]
+        #[cfg(not(feature = "custom_caused_by"))]
         write!(formatter, "    caused by: {}", self.source)?;
 
         Ok(())
@@ -113,12 +113,12 @@ impl StdError for Error {
         self.source()
     }
 
-    #[cfg(not(feature = "anyhow"))]
+    #[cfg(not(feature = "custom_caused_by"))]
     fn source(&self) -> Option<&(dyn StdError + 'static)> {
         None
     }
 
-    #[cfg(feature = "anyhow")]
+    #[cfg(feature = "custom_caused_by")]
     fn source(&self) -> Option<&(dyn StdError + 'static)> {
         Some(&self.source)
     }
@@ -201,7 +201,7 @@ impl fmt::Display for SourceDestError {
             }
         }?;
 
-        #[cfg(not(feature = "anyhow"))]
+        #[cfg(not(feature = "custom_caused_by"))]
         write!(formatter, "    caused by: {}", self.source)?;
 
         Ok(())
@@ -213,12 +213,12 @@ impl StdError for SourceDestError {
         self.source()
     }
 
-    #[cfg(not(feature = "anyhow"))]
+    #[cfg(not(feature = "custom_caused_by"))]
     fn source(&self) -> Option<&(dyn StdError + 'static)> {
         None
     }
 
-    #[cfg(feature = "anyhow")]
+    #[cfg(feature = "custom_caused_by")]
     fn source(&self) -> Option<&(dyn StdError + 'static)> {
         Some(&self.source)
     }

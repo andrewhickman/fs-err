@@ -23,9 +23,13 @@ serde_json = "1.0.64"
 [features]
 # Adds I/O safety traits, introduced in Rust 1.63
 io_safety = []
-# Removes the original error text from Display and relies on a wrapper library
-# (such as anyhow) to emit them via `Error::source()`.
-anyhow = []
+
+# Allow custom formatting of the error source
+#
+# When enabled errors emit `std::error::Error::source()` as Some (default is `None`) and
+# no longer include the original `std::io::Error` source in the `Display` implementation.
+# This is useful if errors are wrapped in another library such as Anyhow.
+custom_caused_by = []
 
 [package.metadata.release]
 tag-name = "{{version}}"

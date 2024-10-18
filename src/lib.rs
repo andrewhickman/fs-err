@@ -26,9 +26,8 @@ failed to open file `does not exist.txt`
     caused by: The system cannot find the file specified. (os error 2)
 ```
 
-> Note: To bypass displaying the original error message you can enable the `anyhow` feature.
-> When the `anyhow` feature is enabled `Error::source()` will return `Some` and the original
-> error will not be `Display`-ed via fs-err.
+> Note: Users of `anyhow` or other libraries that format an Error's sources can enable the `custom_caused_by` feature to control the formatting of the orginal error message.
+> When enabled, the `std::fmt::Display` implementation will emit the failed operation and paths but not the original `std::io::Error`. It will instead provide access via [Error::source](https://doc.rust-lang.org/std/error/trait.Error.html#method.source), which will be used by `anyhow` (or similar) libraries.
 
 # Usage
 
