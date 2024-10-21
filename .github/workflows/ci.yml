@@ -67,3 +67,9 @@ jobs:
           command: check
           args: --features tokio
         if: ${{ matrix.rust_version == 'stable' || matrix.rust_version == 'beta' }}
+
+      - name: cargo check --features expose_original_error
+        uses: actions-rs/cargo@v1
+        with:
+          command: check
+          args: --features expose_original_error
