@@ -101,6 +101,7 @@ impl fmt::Display for Error {
             E::WriteAt => write!(formatter, "failed to write with offset to `{}`", path),
         }?;
 
+        // The `expose_original_error` feature indicates the caller should display the original error
         #[cfg(not(feature = "expose_original_error"))]
         write!(formatter, "    caused by: {}", self.source)?;
 
@@ -201,6 +202,7 @@ impl fmt::Display for SourceDestError {
             }
         }?;
 
+        // The `expose_original_error` feature indicates the caller should display the original error
         #[cfg(not(feature = "expose_original_error"))]
         write!(formatter, "    caused by: {}", self.source)?;
 
