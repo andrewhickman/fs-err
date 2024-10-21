@@ -26,7 +26,7 @@ failed to open file `does not exist.txt`
     caused by: The system cannot find the file specified. (os error 2)
 ```
 
-> Note: Users of `anyhow` or other libraries that format an Error's sources can enable the `custom_caused_by` feature to control the formatting of the orginal error message.
+> Note: Users of `anyhow` or other libraries that format an Error's sources can enable the `expose_original_error` feature to control the formatting of the orginal error message.
 > When enabled, the `std::fmt::Display` implementation will emit the failed operation and paths but not the original `std::io::Error`. It will instead provide access via [Error::source](https://doc.rust-lang.org/std/error/trait.Error.html#method.source), which will be used by `anyhow` (or similar) libraries.
 
 # Usage

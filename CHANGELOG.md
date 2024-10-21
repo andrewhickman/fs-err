@@ -1,6 +1,6 @@
 # fs-err Changelog
 
-* Change errors to output original `std::io::Error` information Display by default. This functionality can be disabled for [anyhow](https://docs.rs/anyhow/latest/anyhow/) users by using the new feature `custom_caused_by` ([#60](https://github.com/andrewhickman/fs-err/pull/60)).
+* Change errors to output original `std::io::Error` information Display by default. This functionality can be disabled for [anyhow](https://docs.rs/anyhow/latest/anyhow/) users by using the new feature `expose_original_error` ([#60](https://github.com/andrewhickman/fs-err/pull/60)).
 
 ## 2.11.0
 

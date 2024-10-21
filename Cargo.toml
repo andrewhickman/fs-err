@@ -29,7 +29,7 @@ io_safety = []
 # When enabled errors emit `std::error::Error::source()` as Some (default is `None`) and
 # no longer include the original `std::io::Error` source in the `Display` implementation.
 # This is useful if errors are wrapped in another library such as Anyhow.
-custom_caused_by = []
+expose_original_error = []
 
 [package.metadata.release]
 tag-name = "{{version}}"
