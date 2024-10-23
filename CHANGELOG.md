@@ -18,6 +18,8 @@
 
 * The `io_safety` feature flag has been removed, and this functionality is now always enabled on Rust versions which support it (1.63.0 and greater).
 
+* Removed deprecated APIs: `File::from_options`, `tokio::symlink`
+
 ## 2.11.0
 
 * Added the first line of the standard library documentation to each function's rustdocs, to make them more useful in IDEs ([#50](https://github.com/andrewhickman/fs-err/issues/45))
