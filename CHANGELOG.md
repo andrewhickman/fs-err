@@ -16,6 +16,8 @@
 
   Note that the original error is no longer exposed though [`Error::source()`](https://doc.rust-lang.org/stable/std/error/trait.Error.html#method.source) by default. If you need access to it, you can restore the previous behaviour with the `expose_original_error` feature flag.
 
+* The `io_safety` feature flag has been removed, and this functionality is now always enabled on Rust versions which support it (1.63.0 and greater).
+
 ## 2.11.0
 
 * Added the first line of the standard library documentation to each function's rustdocs, to make them more useful in IDEs ([#50](https://github.com/andrewhickman/fs-err/issues/45))
