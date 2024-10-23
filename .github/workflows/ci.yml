@@ -54,13 +54,6 @@ jobs:
           args: --tests -- -D warnings
         if:  matrix.rust_version == 'stable'
 
-      - name: cargo check --features "io_safety"
-        uses: actions-rs/cargo@v1
-        with:
-          command: check
-          args: --features io_safety
-        if: ${{ matrix.rust_version == 'stable' || matrix.rust_version == 'beta' }}
-
       - name: cargo check --features tokio
         uses: actions-rs/cargo@v1
         with:
