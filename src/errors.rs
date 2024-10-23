@@ -99,7 +99,13 @@ impl fmt::Display for Error {
             E::ReadAt => write!(formatter, "failed to read with offset from `{}`", path),
             #[cfg(unix)]
             E::WriteAt => write!(formatter, "failed to write with offset to `{}`", path),
-        }
+        }?;
+
+        // The `expose_original_error` feature indicates the caller should display the original error
+        #[cfg(not(feature = "expose_original_error"))]
+        write!(formatter, "    caused by: {}", self.source)?;
+
+        Ok(())
     }
 }
 
@@ -108,6 +114,12 @@ impl StdError for Error {
         self.source()
     }
 
+    #[cfg(not(feature = "expose_original_error"))]
+    fn source(&self) -> Option<&(dyn StdError + 'static)> {
+        None
+    }
+
+    #[cfg(feature = "expose_original_error")]
     fn source(&self) -> Option<&(dyn StdError + 'static)> {
         Some(&self.source)
     }
@@ -188,7 +200,13 @@ impl fmt::Display for SourceDestError {
             SourceDestErrorKind::SymlinkDir => {
                 write!(formatter, "failed to symlink dir from {} to {}", from, to)
             }
-        }
+        }?;
+
+        // The `expose_original_error` feature indicates the caller should display the original error
+        #[cfg(not(feature = "expose_original_error"))]
+        write!(formatter, "    caused by: {}", self.source)?;
+
+        Ok(())
     }
 }
 
@@ -197,6 +215,12 @@ impl StdError for SourceDestError {
         self.source()
     }
 
+    #[cfg(not(feature = "expose_original_error"))]
+    fn source(&self) -> Option<&(dyn StdError + 'static)> {
+        None
+    }
+
+    #[cfg(feature = "expose_original_error")]
     fn source(&self) -> Option<&(dyn StdError + 'static)> {
         Some(&self.source)
     }
