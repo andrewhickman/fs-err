@@ -1,6 +1,20 @@
 # fs-err Changelog
 
-* Change errors to output original `std::io::Error` information Display by default. This functionality can be disabled for [anyhow](https://docs.rs/anyhow/latest/anyhow/) users by using the new feature `expose_original_error` ([#60](https://github.com/andrewhickman/fs-err/pull/60)).
+## 3.0.0
+
+* Error messages now include the original message from `std::io::Error` by default ([#60](https://github.com/andrewhickman/fs-err/pull/60)). Previously this was exposed through the [`Error::source()`](https://doc.rust-lang.org/stable/std/error/trait.Error.html#method.source) method. For example, previously a message would look like:
+
+  ```
+  failed to open file `file.txt`
+  ```
+
+  and you would have to remember to print the source, or use a library like `anyhow` to print the full chain of source errors. The new error message includes the cause by default
+
+  ```
+  failed to open file `file.txt`: The system cannot find the file specified. (os error 2)
+  ```
+
+  Note that the original error is no longer exposed though [`Error::source()`](https://doc.rust-lang.org/stable/std/error/trait.Error.html#method.source) by default. If you need access to it, you can restore the previous behaviour with the `expose_original_error` feature flag.
 
 ## 2.11.0
 

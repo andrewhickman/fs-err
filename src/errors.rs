@@ -103,7 +103,7 @@ impl fmt::Display for Error {
 
         // The `expose_original_error` feature indicates the caller should display the original error
         #[cfg(not(feature = "expose_original_error"))]
-        write!(formatter, "    caused by: {}", self.source)?;
+        write!(formatter, ": {}", self.source)?;
 
         Ok(())
     }
@@ -204,7 +204,7 @@ impl fmt::Display for SourceDestError {
 
         // The `expose_original_error` feature indicates the caller should display the original error
         #[cfg(not(feature = "expose_original_error"))]
-        write!(formatter, "    caused by: {}", self.source)?;
+        write!(formatter, ": {}", self.source)?;
 
         Ok(())
     }

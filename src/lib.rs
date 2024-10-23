@@ -22,12 +22,8 @@ The system cannot find the file specified. (os error 2)
 ...but if we use fs-err instead, our error contains more actionable information:
 
 ```txt
-failed to open file `does not exist.txt`
-    caused by: The system cannot find the file specified. (os error 2)
+failed to open file `does not exist.txt`: The system cannot find the file specified. (os error 2)
 ```
-
-> Note: Users of `anyhow` or other libraries that format an Error's sources can enable the `expose_original_error` feature to control the formatting of the orginal error message.
-> When enabled, the `std::fmt::Display` implementation will emit the failed operation and paths but not the original `std::io::Error`. It will instead provide access via [Error::source](https://doc.rust-lang.org/std/error/trait.Error.html#method.source), which will be used by `anyhow` (or similar) libraries.
 
 # Usage
 
@@ -62,6 +58,20 @@ println!("Program config: {:?}", decoded);
 
 # Ok::<(), Box<dyn std::error::Error>>(())
 ```
+
+# Feature flags
+
+* `expose_original_error`: when enabled, the [`Error::source()`](https://doc.rust-lang.org/stable/std/error/trait.Error.html#method.source) method of errors returned by this crate return the original `io::Error`. To avoid duplication in error messages,
+  this also suppresses printing its message in their `Display` implementation, so make sure that you are printing the full error chain.
+
+
+# Minimum Supported Rust Version
+
+The oldest rust version this crate is tested on is **1.40**.
+
+This crate will generally be conservative with rust version updates. It uses the [`autocfg`](https://crates.io/crates/autocfg) crate to allow wrapping new APIs without incrementing the MSRV.
+
+If the `tokio` feature is enabled, this crate will inherit the MSRV of the selected [`tokio`](https://crates.io/crates/tokio) version.
 
 [std::fs]: https://doc.rust-lang.org/stable/std/fs/
 [std::io::Error]: https://doc.rust-lang.org/stable/std/io/struct.Error.html
