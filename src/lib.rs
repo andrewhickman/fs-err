@@ -79,7 +79,7 @@ If the `tokio` feature is enabled, this crate will inherit the MSRV of the selec
 [serde_json]: https://crates.io/crates/serde_json
 */
 
-#![doc(html_root_url = "https://docs.rs/fs-err/2.11.0")]
+#![doc(html_root_url = "https://docs.rs/fs-err/3.0.0")]
 #![deny(missing_debug_implementations, missing_docs)]
 #![cfg_attr(docsrs, feature(doc_cfg))]
 
