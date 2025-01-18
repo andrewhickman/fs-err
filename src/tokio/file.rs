@@ -41,6 +41,17 @@ impl File {
         }
     }
 
+    /// Opens a file in read-write mode.
+    ///
+    /// Wrapper for [`tokio::fs::File::create_new`].
+    pub async fn create_new(path: impl Into<PathBuf>) -> Result<Self, io::Error> {
+        let path = path.into();
+        match fs::File::create_new(&path).await {
+            Ok(file) => Ok(File::from_parts(file, path)),
+            Err(err) => Err(Error::build(err, ErrorKind::CreateFile, path)),
+        }
+    }
+
     /// Converts a [`crate::File`] to a [`tokio::fs::File`].
     ///
     /// Wrapper for [`tokio::fs::File::from_std`].
