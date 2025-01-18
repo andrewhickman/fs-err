@@ -57,6 +57,26 @@ impl File {
         }
     }
 
+    /// Opens a file in read-write mode.
+    ///
+    /// Wrapper for [`File::create_new`](https://doc.rust-lang.org/stable/std/fs/struct.File.html#method.create_new).
+    pub fn create_new<P>(path: P) -> Result<Self, io::Error>
+    where
+        P: Into<PathBuf>,
+    {
+        let path = path.into();
+        // TODO: Use fs::File::create_new once MSRV is at least 1.77
+        match fs::OpenOptions::new()
+            .read(true)
+            .write(true)
+            .create_new(true)
+            .open(&path)
+        {
+            Ok(file) => Ok(File::from_parts(file, path)),
+            Err(err) => Err(Error::build(err, ErrorKind::CreateFile, path)),
+        }
+    }
+
     /// Attempts to sync all OS-internal metadata to disk.
     ///
     /// Wrapper for [`File::sync_all`](https://doc.rust-lang.org/stable/std/fs/struct.File.html#method.sync_all).
