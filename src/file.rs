@@ -3,6 +3,7 @@ use std::io::{self, Read, Seek, Write};
 use std::path::{Path, PathBuf};
 
 use crate::errors::{Error, ErrorKind};
+use crate::OpenOptions;
 
 /// Wrapper around [`std::fs::File`][std::fs::File] which adds more helpful
 /// information to all errors.
@@ -75,6 +76,13 @@ impl File {
             Ok(file) => Ok(File::from_parts(file, path)),
             Err(err) => Err(Error::build(err, ErrorKind::CreateFile, path)),
         }
+    }
+
+    /// Returns a new `OpenOptions` object.
+    ///
+    /// Wrapper for [`File::options`](https://doc.rust-lang.org/stable/std/fs/struct.File.html#method.options).
+    pub fn options() -> OpenOptions {
+        OpenOptions::new()
     }
 
     /// Attempts to sync all OS-internal metadata to disk.
