@@ -1,5 +1,9 @@
 # fs-err Changelog
 
+## 3.1.0
+
+* Added new wrappers for `create_new` and `options` functions on `File` ([#69](https://github.com/andrewhickman/fs-err/pull/69))
+
 ## 3.0.0
 
 * Error messages now include the original message from `std::io::Error` by default ([#60](https://github.com/andrewhickman/fs-err/pull/60)). Previously this was exposed through the [`Error::source()`](https://doc.rust-lang.org/stable/std/error/trait.Error.html#method.source) method. For example, previously a message would look like:
