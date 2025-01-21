@@ -206,7 +206,7 @@ impl Read for File {
     }
 }
 
-impl<'a> Read for &'a File {
+impl Read for &File {
     fn read(&mut self, buf: &mut [u8]) -> std::io::Result<usize> {
         (&self.file)
             .read(buf)
@@ -234,7 +234,7 @@ impl Seek for File {
     }
 }
 
-impl<'a> Seek for &'a File {
+impl Seek for &File {
     fn seek(&mut self, pos: std::io::SeekFrom) -> std::io::Result<u64> {
         (&self.file)
             .seek(pos)
@@ -262,7 +262,7 @@ impl Write for File {
     }
 }
 
-impl<'a> Write for &'a File {
+impl Write for &File {
     fn write(&mut self, buf: &[u8]) -> std::io::Result<usize> {
         (&self.file)
             .write(buf)
