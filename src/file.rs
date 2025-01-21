@@ -3,6 +3,7 @@ use std::io::{self, Read, Seek, Write};
 use std::path::{Path, PathBuf};
 
 use crate::errors::{Error, ErrorKind};
+use crate::OpenOptions;
 
 /// Wrapper around [`std::fs::File`][std::fs::File] which adds more helpful
 /// information to all errors.
@@ -55,6 +56,33 @@ impl File {
             Ok(file) => Ok(File::from_parts(file, path)),
             Err(err_gen) => Err(err_gen(path)),
         }
+    }
+
+    /// Opens a file in read-write mode.
+    ///
+    /// Wrapper for [`File::create_new`](https://doc.rust-lang.org/stable/std/fs/struct.File.html#method.create_new).
+    pub fn create_new<P>(path: P) -> Result<Self, io::Error>
+    where
+        P: Into<PathBuf>,
+    {
+        let path = path.into();
+        // TODO: Use fs::File::create_new once MSRV is at least 1.77
+        match fs::OpenOptions::new()
+            .read(true)
+            .write(true)
+            .create_new(true)
+            .open(&path)
+        {
+            Ok(file) => Ok(File::from_parts(file, path)),
+            Err(err) => Err(Error::build(err, ErrorKind::CreateFile, path)),
+        }
+    }
+
+    /// Returns a new `OpenOptions` object.
+    ///
+    /// Wrapper for [`File::options`](https://doc.rust-lang.org/stable/std/fs/struct.File.html#method.options).
+    pub fn options() -> OpenOptions {
+        OpenOptions::new()
     }
 
     /// Attempts to sync all OS-internal metadata to disk.
@@ -178,7 +206,7 @@ impl Read for File {
     }
 }
 
-impl<'a> Read for &'a File {
+impl Read for &File {
     fn read(&mut self, buf: &mut [u8]) -> std::io::Result<usize> {
         (&self.file)
             .read(buf)
@@ -206,7 +234,7 @@ impl Seek for File {
     }
 }
 
-impl<'a> Seek for &'a File {
+impl Seek for &File {
     fn seek(&mut self, pos: std::io::SeekFrom) -> std::io::Result<u64> {
         (&self.file)
             .seek(pos)
@@ -234,7 +262,7 @@ impl Write for File {
     }
 }
 
-impl<'a> Write for &'a File {
+impl Write for &File {
     fn write(&mut self, buf: &[u8]) -> std::io::Result<usize> {
         (&self.file)
             .write(buf)
