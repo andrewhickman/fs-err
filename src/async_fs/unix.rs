@@ -17,7 +17,7 @@ pub async fn symlink<P: AsRef<Path>, Q: AsRef<Path>>(src: P, dst: Q) -> io::Resu
         .map_err(|err| SourceDestError::build(err, SourceDestErrorKind::Symlink, src, dst))
 }
 
-/// Unix-specific extensions to [`DirBuilder`].
+/// Unix-specific extensions to [`crate::async_fs::DirBuilder`].
 pub trait DirBuilderExt: Sealed {
     /// Sets the mode to create new directories with.
     ///
