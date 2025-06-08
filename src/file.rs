@@ -167,6 +167,18 @@ impl File {
         (self.file, self.path)
     }
 
+    /// Consumes this [`File`](struct.File.html) and returns the underlying
+    /// [`std::fs::File`][std::fs::File].
+    pub fn into_file(self) -> fs::File {
+        self.file
+    }
+
+    /// Consumes this [`File`](struct.File.html) and returns the underlying
+    /// path as a [`PathBuf`].
+    pub fn into_path(self) -> PathBuf {
+        self.path
+    }
+
     /// Returns a reference to the underlying [`std::fs::File`][std::fs::File].
     ///
     /// [std::fs::File]: https://doc.rust-lang.org/stable/std/fs/struct.File.html
@@ -222,7 +234,7 @@ impl Read for &File {
 
 impl From<File> for fs::File {
     fn from(file: File) -> Self {
-        file.into_parts().0
+        file.into_file()
     }
 }
 
@@ -327,7 +339,7 @@ mod unix {
 
         impl From<crate::File> for OwnedFd {
             fn from(file: crate::File) -> Self {
-                file.into_parts().0.into()
+                file.into_file().into()
             }
         }
     }
