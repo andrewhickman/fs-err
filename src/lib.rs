@@ -73,6 +73,9 @@ This crate will generally be conservative with rust version updates. It uses the
 
 If the `tokio` feature is enabled, this crate will inherit the MSRV of the selected [`tokio`](https://crates.io/crates/tokio) version.
 
+If the `smol` feature is enabled, this crate will inherit the MSRV of the selected [`smol`](https://crates.io/crates/smol) version.
+
+
 [std::fs]: https://doc.rust-lang.org/stable/std/fs/
 [std::io::Error]: https://doc.rust-lang.org/stable/std/io/struct.Error.html
 [std::io::Read]: https://doc.rust-lang.org/stable/std/io/trait.Read.html
@@ -83,6 +86,9 @@ If the `tokio` feature is enabled, this crate will inherit the MSRV of the selec
 #![deny(missing_debug_implementations, missing_docs)]
 #![cfg_attr(docsrs, feature(doc_cfg))]
 
+#[cfg(feature = "async-fs")]
+#[cfg_attr(docsrs, doc(cfg(feature = "async-fs")))]
+pub mod async_fs;
 mod dir;
 mod errors;
 mod file;
