@@ -146,6 +146,45 @@ impl File {
     }
 }
 
+/// Locking methods added in Rust 1.89.
+#[cfg(rustc_1_89)]
+impl File {
+    /// Acquire an exclusive lock on the file. Blocks until the lock can be acquired.
+    ///
+    /// Wrapper for [`File::lock()`](https://doc.rust-lang.org/nightly/std/fs/struct.File.html#method.lock).
+    pub fn lock(&self) -> Result<(), io::Error> {
+        self.file.lock()
+    }
+
+    /// Acquire a shared (non-exclusive) lock on the file. Blocks until the lock can be acquired.
+    ///
+    /// Wrapper for [`File::lock_shared()`](https://doc.rust-lang.org/nightly/std/fs/struct.File.html#method.lock_shared).
+    pub fn lock_shared(&self) -> Result<(), io::Error> {
+        self.file.lock_shared()
+    }
+
+    /// Try to acquire an exclusive lock on the file.
+    ///
+    /// Wrapper for [`File::try_lock()`](https://doc.rust-lang.org/nightly/std/fs/struct.File.html#method.try_lock).
+    pub fn try_lock(&self) -> Result<(), fs::TryLockError> {
+        self.file.try_lock()
+    }
+
+    /// Try to acquire a shared (non-exclusive) lock on the file.
+    ///
+    /// Wrapper for [`File::try_lock_shared()`](https://doc.rust-lang.org/nightly/std/fs/struct.File.html#method.try_lock_shared).
+    pub fn try_lock_shared(&self) -> Result<(), fs::TryLockError> {
+        self.file.try_lock_shared()
+    }
+
+    /// Release all locks on the file.
+    ///
+    /// Wrapper for [`File::unlock()`](https://doc.rust-lang.org/nightly/std/fs/struct.File.html#method.unlock).
+    pub fn unlock(&self) -> Result<(), io::Error> {
+        self.file.unlock()
+    }
+}
+
 /// Methods added by fs-err that are not available on
 /// [`std::fs::File`][std::fs::File].
 ///
