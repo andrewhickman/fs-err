@@ -153,14 +153,18 @@ impl File {
     ///
     /// Wrapper for [`File::lock()`](https://doc.rust-lang.org/nightly/std/fs/struct.File.html#method.lock).
     pub fn lock(&self) -> Result<(), io::Error> {
-        self.file.lock()
+        self.file
+            .lock()
+            .map_err(|source| self.error(source, ErrorKind::Lock))
     }
 
     /// Acquire a shared (non-exclusive) lock on the file. Blocks until the lock can be acquired.
     ///
     /// Wrapper for [`File::lock_shared()`](https://doc.rust-lang.org/nightly/std/fs/struct.File.html#method.lock_shared).
     pub fn lock_shared(&self) -> Result<(), io::Error> {
-        self.file.lock_shared()
+        self.file
+            .lock_shared()
+            .map_err(|source| self.error(source, ErrorKind::Lock))
     }
 
     /// Try to acquire an exclusive lock on the file.
@@ -181,7 +185,9 @@ impl File {
     ///
     /// Wrapper for [`File::unlock()`](https://doc.rust-lang.org/nightly/std/fs/struct.File.html#method.unlock).
     pub fn unlock(&self) -> Result<(), io::Error> {
-        self.file.unlock()
+        self.file
+            .unlock()
+            .map_err(|source| self.error(source, ErrorKind::Unlock))
     }
 }
 
