@@ -25,6 +25,8 @@ pub(crate) enum ErrorKind {
     SymlinkMetadata,
     #[allow(dead_code)]
     FileExists,
+    Lock,
+    Unlock,
 
     #[cfg(windows)]
     SeekRead,
@@ -89,6 +91,8 @@ impl fmt::Display for Error {
                 write!(formatter, "failed to query metadata of symlink `{}`", path)
             }
             E::FileExists => write!(formatter, "failed to check file existence `{}`", path),
+            E::Lock => write!(formatter, "failed to lock `{}`", path),
+            E::Unlock => write!(formatter, "failed to unlock `{}`", path),
 
             #[cfg(windows)]
             E::SeekRead => write!(formatter, "failed to seek and read from `{}`", path),
