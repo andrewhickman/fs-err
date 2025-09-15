@@ -1,5 +1,9 @@
 # fs-err Changelog
 
+## 3.1.2
+
+* Added wrappers for locking methods added to `File` in Rust 1.89 ([#75](https://github.com/andrewhickman/fs-err/pull/75))
+
 ## 3.1.1
 
 * Added `File::into_file` and `File::into_path` ([#73](https://github.com/andrewhickman/fs-err/pull/73))
