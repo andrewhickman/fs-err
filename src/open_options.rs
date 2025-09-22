@@ -1,4 +1,4 @@
-use std::{fs, io, path::PathBuf};
+use std::{fs, io, path::{Path, PathBuf}};
 
 use crate::errors::{Error, ErrorKind};
 
@@ -66,13 +66,10 @@ impl OpenOptions {
     /// Opens a file at `path` with the options specified by `self`.
     ///
     /// Wrapper for [`std::fs::OpenOptions::open`](https://doc.rust-lang.org/std/fs/struct.OpenOptions.html#method.open)
-    pub fn open<P>(&self, path: P) -> io::Result<crate::File>
-    where
-        P: Into<PathBuf>,
-    {
-        let path = path.into();
+    pub fn open<P: AsRef<Path>>(&self, path: P) -> io::Result<crate::File> {
+        let path = path.as_ref();
         match self.0.open(&path) {
-            Ok(file) => Ok(crate::File::from_parts(file, path)),
+            Ok(file) => Ok(crate::File::from_parts(file, path.to_path_buf())),
             Err(source) => Err(Error::build(source, ErrorKind::OpenFile, path)),
         }
     }

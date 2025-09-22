@@ -1,19 +1,19 @@
 use std::ffi::OsString;
 use std::fs;
 use std::io;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 use crate::errors::{Error, ErrorKind};
 
 /// Returns an iterator over the entries within a directory.
 ///
 /// Wrapper for [`fs::read_dir`](https://doc.rust-lang.org/stable/std/fs/fn.read_dir.html).
-pub fn read_dir<P: Into<PathBuf>>(path: P) -> io::Result<ReadDir> {
-    let path = path.into();
+pub fn read_dir<P: AsRef<Path>>(path: P) -> io::Result<ReadDir> {
+    let path = path.as_ref();
 
-    match fs::read_dir(&path) {
-        Ok(inner) => Ok(ReadDir { inner, path }),
-        Err(source) => Err(Error::build(source, ErrorKind::ReadDir, path)),
+    match fs::read_dir(path) {
+        Ok(inner) => Ok(ReadDir { inner, path: path.to_path_buf() }),
+        Err(source) => Err(Error::build(source, ErrorKind::ReadDir, path.to_path_buf())),
     }
 }
 
