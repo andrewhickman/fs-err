@@ -26,6 +26,7 @@ jobs:
       - uses: dtolnay/rust-toolchain@v1
         with:
           toolchain: ${{ matrix.rust_version }}
+          components: ${{ matrix.rust_version == 'stable' && 'clippy,rustfmt' || '' }}
 
       - run: cargo update
         if: ${{ matrix.rust_version == 'stable' || matrix.rust_version == 'beta' }}
