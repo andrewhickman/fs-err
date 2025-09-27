@@ -85,6 +85,17 @@ pub async fn metadata(path: impl AsRef<Path>) -> io::Result<Metadata> {
         .map_err(|err| Error::build(err, ErrorKind::Metadata, path))
 }
 
+/// Returns `Ok(true)` if the path points at an existing entity.
+///
+/// Wrapper for [`tokio::fs::try_exists`].
+#[cfg_attr(docsrs, doc(cfg(feature = "tokio")))]
+pub async fn try_exists(path: impl AsRef<Path>) -> io::Result<bool> {
+    let path = path.as_ref();
+    tokio::fs::try_exists(path)
+        .await
+        .map_err(|err| Error::build(err, ErrorKind::FileExists, path))
+}
+
 /// Reads the entire contents of a file into a bytes vector.
 ///
 /// Wrapper for [`tokio::fs::read`].
