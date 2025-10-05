@@ -1,5 +1,9 @@
 # fs-err Changelog
 
+## 3.1.3
+
+* Add wrappers for `std::fs::exists` and `tokio::fs::try_exists` ([#77](https://github.com/andrewhickman/fs-err/pull/77))
+
 ## 3.1.2
 
 * Added wrappers for locking methods added to `File` in Rust 1.89 ([#75](https://github.com/andrewhickman/fs-err/pull/75))
