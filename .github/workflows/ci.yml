@@ -67,3 +67,17 @@ jobs:
         with:
           command: check
           args: --features expose_original_error
+
+      - name: cargo check --features debug
+        uses: actions-rs/cargo@v1
+        with:
+          command: check
+          args: --features debug
+        if: ${{ matrix.rust_version == 'stable' || matrix.rust_version == 'beta' }}
+
+      - name: cargo check --features debug_tokio,tokio
+        uses: actions-rs/cargo@v1
+        with:
+          command: check
+          args: --features debug_tokio,tokio
+        if: ${{ matrix.rust_version == 'stable' || matrix.rust_version == 'beta' }}
