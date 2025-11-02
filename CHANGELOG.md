@@ -1,5 +1,27 @@
 # fs-err Changelog
 
+* Minimum supported Rust version is now 1.60.0 [#80](https://github.com/andrewhickman/fs-err/pull/80)
+* Introduce `debug` feature. Debug filesystem errors faster by exposing more information ([#80](https://github.com/andrewhickman/fs-err/pull/80)). Without this feature on, errors might look like this:
+
+  ```
+  failed to open file `file.txt`: The system cannot find the file specified. (os error 2)
+  ```
+
+  With this feature on, it will include additional information. For example:
+
+  ```
+  failed to open file `file.txt`: The system cannot find the file specified. (os error 2)
+
+  Path does not exist `file.txt`
+  - Absolute path `/path/to/dir/file.txt`
+  - Missing `file.txt` from parent directory:
+    `/path/to/dir`
+      └── `file.md`
+      └── `different.txt`
+  ```
+
+  It's suggested to enable this feature in `dev-dependencies` for security and performance reasons.
+
 ## 3.1.3
 
 * Add wrappers for `std::fs::exists` and `tokio::fs::try_exists` ([#77](https://github.com/andrewhickman/fs-err/pull/77))

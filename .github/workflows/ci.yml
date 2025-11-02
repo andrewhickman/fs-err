@@ -15,7 +15,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
-        rust_version: [stable, beta, 1.40.0]
+        rust_version: [stable, beta, 1.60.0]
 
     runs-on: ${{ matrix.os }}
 
@@ -67,3 +67,17 @@ jobs:
         with:
           command: check
           args: --features expose_original_error
+
+      - name: cargo check --features debug
+        uses: actions-rs/cargo@v1
+        with:
+          command: check
+          args: --features debug
+        if: ${{ matrix.rust_version == 'stable' || matrix.rust_version == 'beta' }}
+
+      - name: cargo check --features debug,tokio
+        uses: actions-rs/cargo@v1
+        with:
+          command: check
+          args: --features debug,tokio
+        if: ${{ matrix.rust_version == 'stable' || matrix.rust_version == 'beta' }}

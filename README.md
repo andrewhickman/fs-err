@@ -69,7 +69,26 @@ println!("Program config: {:?}", decoded);
 
 * `expose_original_error`: when enabled, the [`Error::source()`](https://doc.rust-lang.org/stable/std/error/trait.Error.html#method.source) method of errors returned by this crate return the original `io::Error`. To avoid duplication in error messages,
   this also suppresses printing its message in their `Display` implementation, so make sure that you are printing the full error chain.
+* `debug`: Debug filesystem errors faster by exposing more information. When a filesystem command
+  fails, the error message might say "file does not exist." But it won't say **why** it doesn't exist.
+  Perhaps the programmer misspelled the filename, perhaps that directory doesn't exist, or if it does,
+  but the current user doesn't have permissions to see the contents. This feature analyzes the filesystem
+  to output various "facts" that will help a developer debug the root of the current error.
+  * Warning: Exposes filesystem metadata. This feature exposes additional metadata about your filesystem
+    such as directory contents and permissions, which may be sensitive. Only enable `debug` when
+    error messages won't be displayed to the end user, or they have access to filesystem metadata some
+    other way.
+  * Warning: This may slow down your program. This feature will trigger additional filesystem calls when
+    errors occur, which may cause performance issues. Do not use if filesystem errors are common on a
+    performance-sensitive "hotpath." Use in scenarios where developer hours are more expensive than
+    compute time.
+  * To mitigate performance and security concerns, consider only enabling this feature in `dev-dependencies`:
+  * Requires Rust 1.79 or later
 
+```toml
+[dev-dependencies]
+fs-err = { features = ["debug"] }
+```
 
 ## Minimum Supported Rust Version
 
