@@ -1,3 +1,5 @@
+#[cfg(all(feature = "debug", rustc_1_79))]
+use path_facts::PathFacts;
 use std::error::Error as StdError;
 use std::fmt;
 use std::io;
@@ -109,6 +111,11 @@ impl fmt::Display for Error {
         #[cfg(not(feature = "expose_original_error"))]
         write!(formatter, ": {}", self.source)?;
 
+        #[cfg(all(feature = "debug", not(feature = "tokio"), rustc_1_79))]
+        writeln!(formatter, "{}", path_facts(&self.path))?;
+
+        #[cfg(all(feature = "debug", feature = "tokio", rustc_1_79))]
+        writeln!(formatter, "{}", async_path_facts(&self.path))?;
         Ok(())
     }
 }
@@ -210,8 +217,54 @@ impl fmt::Display for SourceDestError {
         #[cfg(not(feature = "expose_original_error"))]
         write!(formatter, ": {}", self.source)?;
 
+        #[cfg(all(feature = "debug", not(feature = "tokio"), rustc_1_79))]
+        writeln!(
+            formatter,
+            "{}",
+            path_facts_source_dest(&self.from_path, &self.to_path)
+        )?;
+
+        #[cfg(all(feature = "debug", feature = "tokio", rustc_1_79))]
+        writeln!(
+            formatter,
+            "{}",
+            async_path_facts_source_dest(&self.from_path, &self.to_path)
+        )?;
+
         Ok(())
     }
+}
+
+#[cfg(all(feature = "debug", rustc_1_79))]
+pub(crate) fn path_facts_source_dest(from: &std::path::Path, to: &std::path::Path) -> String {
+    format!(
+        "
+
+From path {}
+To path {}",
+        PathFacts::new(from),
+        PathFacts::new(to)
+    )
+}
+
+#[cfg(all(feature = "debug", feature = "tokio", rustc_1_79))]
+pub(crate) fn async_path_facts(path: &std::path::Path) -> String {
+    tokio::task::block_in_place(|| path_facts(path))
+}
+
+#[cfg(all(feature = "debug", feature = "tokio", rustc_1_79))]
+pub(crate) fn async_path_facts_source_dest(from: &std::path::Path, to: &std::path::Path) -> String {
+    tokio::task::block_in_place(|| path_facts_source_dest(from, to))
+}
+
+#[cfg(all(feature = "debug", rustc_1_79))]
+pub(crate) fn path_facts(path: &std::path::Path) -> String {
+    format!(
+        "
+
+Path {}",
+        PathFacts::new(path)
+    )
 }
 
 impl StdError for SourceDestError {
@@ -227,5 +280,79 @@ impl StdError for SourceDestError {
     #[cfg(feature = "expose_original_error")]
     fn source(&self) -> Option<&(dyn StdError + 'static)> {
         Some(&self.source)
+    }
+}
+
+#[cfg(all(feature = "debug", rustc_1_79))]
+#[cfg(test)]
+mod path_facts_tests {
+    use super::*;
+    use pretty_assertions::assert_eq;
+
+    #[test]
+    fn test_path_facts() {
+        let temp = tempfile::TempDir::new().unwrap();
+        let temp_dir = temp.path();
+        let file_path = temp_dir.join("test_file.txt");
+
+        let io_error = io::Error::new(std::io::ErrorKind::Other, "original error message");
+        let fs_err = Error::build(io_error, ErrorKind::OpenFile, &file_path);
+
+        let output = fs_err
+            .to_string()
+            .replace(
+                &temp_dir.join("test_file.txt").display().to_string(),
+                "/path/to/dir/test_file.txt",
+            )
+            .replace(temp_dir.display().to_string().as_str(), "/path/to/dir");
+
+        let expected = r"
+failed to open file `/path/to/dir/test_file.txt`: original error message
+
+Path does not exist `/path/to/dir/test_file.txt`
+ - Missing `test_file.txt` from parent directory:
+   `/path/to/dir`
+      └── (empty)
+";
+        assert_eq!(expected.trim(), output.trim());
+    }
+
+    #[test]
+    fn test_path_facts_source_dest() {
+        let temp = tempfile::TempDir::new().unwrap();
+        let temp_dir = temp.path();
+        let file_path = temp_dir.join("source_file.txt");
+        let dest_path = temp_dir.join("dest_file.txt");
+
+        let io_error = io::Error::new(std::io::ErrorKind::Other, "original error message");
+        let fs_err =
+            SourceDestError::build(io_error, SourceDestErrorKind::Copy, &file_path, &dest_path);
+
+        let output = fs_err
+            .to_string()
+            .replace(
+                &temp_dir.join("source_file.txt").display().to_string(),
+                "/path/to/dir/source_file.txt",
+            )
+            .replace(
+                &temp_dir.join("dest_file.txt").display().to_string(),
+                "/path/to/dir/dest_file.txt",
+            )
+            .replace(&temp_dir.display().to_string(), "/path/to/dir");
+
+        let expected = r"
+failed to copy file from /path/to/dir/source_file.txt to /path/to/dir/dest_file.txt: original error message
+
+From path does not exist `/path/to/dir/source_file.txt`
+ - Missing `source_file.txt` from parent directory:
+   `/path/to/dir`
+      └── (empty)
+
+To path does not exist `/path/to/dir/dest_file.txt`
+ - Missing `dest_file.txt` from parent directory:
+   `/path/to/dir`
+      └── (empty)
+";
+        assert_eq!(expected.trim(), output.trim());
     }
 }

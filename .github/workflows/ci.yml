@@ -41,6 +41,20 @@ jobs:
         with:
           command: test
 
+      - name: cargo test --features debug
+        uses: actions-rs/cargo@v1
+        with:
+          command: test
+          args: --features debug
+        if:  matrix.rust_version == 'stable'
+
+      - name: cargo test --features debug,tokio
+        uses: actions-rs/cargo@v1
+        with:
+          command: test
+          args: --features debug,tokio
+        if:  matrix.rust_version == 'stable'
+
       - name: cargo fmt
         uses: actions-rs/cargo@v1
         with:
