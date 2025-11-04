@@ -85,7 +85,7 @@ fs-err = { features = ["debug"] }
 
 # Minimum Supported Rust Version
 
-The oldest rust version this crate is tested on is **1.40**.
+The oldest rust version this crate is tested on is **1.65**.
 
 This crate will generally be conservative with rust version updates. It uses the [`autocfg`](https://crates.io/crates/autocfg) crate to allow wrapping new APIs without incrementing the MSRV.
 

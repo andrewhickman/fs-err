@@ -372,7 +372,6 @@ mod unix {
         }
     }
 
-    #[cfg(rustc_1_63)]
     mod io_safety {
         use std::os::unix::io::{AsFd, BorrowedFd, OwnedFd};
 
@@ -430,7 +429,6 @@ mod windows {
         }
     }
 
-    #[cfg(rustc_1_63)]
     mod io_safety {
         use std::os::windows::io::{AsHandle, BorrowedHandle, OwnedHandle};
 

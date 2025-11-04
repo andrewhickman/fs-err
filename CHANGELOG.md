@@ -1,5 +1,6 @@
 # fs-err Changelog
 
+* Minimum supported Rust version is now 1.65.0 [#79](https://github.com/andrewhickman/fs-err/pull/79)
 * Introduce `debug` feature. Debug filesystem errors faster by exposing more information ([#79](https://github.com/andrewhickman/fs-err/pull/79)). Without this feature on, errors might look like this:
 
   ```

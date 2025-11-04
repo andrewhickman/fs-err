@@ -10,6 +10,11 @@ categories = ["command-line-interface", "filesystem"]
 license = "MIT/Apache-2.0"
 readme = "README.md"
 exclude = [".github", ".gitignore", "README.tpl"]
+rust-version = "1.65.0"
+
+[lints.clippy]
+# We use build.rs to conditionally compile features for newer Rust versions
+incompatible_msrv = "allow"
 
 [dependencies]
 tokio = { version = "1.21", optional = true, default_features = false, features = ["fs"] }

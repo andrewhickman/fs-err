@@ -13,7 +13,6 @@ pub trait PathExt: crate::Sealed {
     /// Returns Ok(true) if the path points at an existing entity.
     ///
     /// Wrapper for [`Path::try_exists`](https://doc.rust-lang.org/std/path/struct.Path.html#method.try_exists).
-    #[cfg(rustc_1_63)]
     fn fs_err_try_exists(&self) -> io::Result<bool>;
     /// Given a path, query the file system to get information about a file, directory, etc.
     ///
@@ -39,7 +38,6 @@ pub trait PathExt: crate::Sealed {
 }
 
 impl PathExt for Path {
-    #[cfg(rustc_1_63)]
     fn fs_err_try_exists(&self) -> io::Result<bool> {
         self.try_exists()
             .map_err(|source| Error::build(source, ErrorKind::FileExists, self))
