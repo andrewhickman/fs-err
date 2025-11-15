@@ -1,3 +1,5 @@
+#[cfg(feature = "debug")]
+use path_facts::PathFacts;
 use std::error::Error as StdError;
 use std::fmt;
 use std::io;
@@ -109,6 +111,11 @@ impl fmt::Display for Error {
         #[cfg(not(feature = "expose_original_error"))]
         write!(formatter, ": {}", self.source)?;
 
+        #[cfg(all(feature = "debug", not(feature = "tokio")))]
+        writeln!(formatter, "{}", path_facts(&self.path))?;
+
+        #[cfg(all(feature = "debug", feature = "tokio"))]
+        writeln!(formatter, "{}", async_path_facts(&self.path))?;
         Ok(())
     }
 }
@@ -210,8 +217,54 @@ impl fmt::Display for SourceDestError {
         #[cfg(not(feature = "expose_original_error"))]
         write!(formatter, ": {}", self.source)?;
 
+        #[cfg(all(feature = "debug", not(feature = "tokio")))]
+        writeln!(
+            formatter,
+            "{}",
+            path_facts_source_dest(&self.from_path, &self.to_path)
+        )?;
+
+        #[cfg(all(feature = "debug", feature = "tokio"))]
+        writeln!(
+            formatter,
+            "{}",
+            async_path_facts_source_dest(&self.from_path, &self.to_path)
+        )?;
+
         Ok(())
     }
+}
+
+#[cfg(feature = "debug")]
+pub(crate) fn path_facts_source_dest(from: &std::path::Path, to: &std::path::Path) -> String {
+    format!(
+        "
+
+From path {}
+To path {}",
+        PathFacts::new(from),
+        PathFacts::new(to)
+    )
+}
+
+#[cfg(all(feature = "debug", feature = "tokio"))]
+pub(crate) fn async_path_facts(path: &std::path::Path) -> String {
+    tokio::task::block_in_place(|| path_facts(path))
+}
+
+#[cfg(all(feature = "debug", feature = "tokio"))]
+pub(crate) fn async_path_facts_source_dest(from: &std::path::Path, to: &std::path::Path) -> String {
+    tokio::task::block_in_place(|| path_facts_source_dest(from, to))
+}
+
+#[cfg(feature = "debug")]
+pub(crate) fn path_facts(path: &std::path::Path) -> String {
+    format!(
+        "
+
+Path {}",
+        PathFacts::new(path)
+    )
 }
 
 impl StdError for SourceDestError {
