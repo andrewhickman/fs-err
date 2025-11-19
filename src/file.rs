@@ -33,47 +33,38 @@ impl File {
     /// Attempts to open a file in read-only mode.
     ///
     /// Wrapper for [`File::open`](https://doc.rust-lang.org/stable/std/fs/struct.File.html#method.open).
-    pub fn open<P>(path: P) -> Result<Self, io::Error>
-    where
-        P: Into<PathBuf>,
-    {
-        let path = path.into();
-        match open(&path) {
-            Ok(file) => Ok(File::from_parts(file, path)),
-            Err(err_gen) => Err(err_gen(path)),
+    pub fn open<P: AsRef<Path>>(path: P) -> Result<Self, io::Error> {
+        let path = path.as_ref();
+        match open(path) {
+            Ok(file) => Ok(File::from_parts(file, path.to_path_buf())),
+            Err(err_gen) => Err(err_gen(path.to_path_buf())),
         }
     }
 
     /// Opens a file in write-only mode.
     ///
     /// Wrapper for [`File::create`](https://doc.rust-lang.org/stable/std/fs/struct.File.html#method.create).
-    pub fn create<P>(path: P) -> Result<Self, io::Error>
-    where
-        P: Into<PathBuf>,
-    {
-        let path = path.into();
-        match create(&path) {
-            Ok(file) => Ok(File::from_parts(file, path)),
-            Err(err_gen) => Err(err_gen(path)),
+    pub fn create<P: AsRef<Path>>(path: P) -> Result<Self, io::Error> {
+        let path = path.as_ref();
+        match create(path) {
+            Ok(file) => Ok(File::from_parts(file, path.to_path_buf())),
+            Err(err_gen) => Err(err_gen(path.to_path_buf())),
         }
     }
 
     /// Opens a file in read-write mode.
     ///
     /// Wrapper for [`File::create_new`](https://doc.rust-lang.org/stable/std/fs/struct.File.html#method.create_new).
-    pub fn create_new<P>(path: P) -> Result<Self, io::Error>
-    where
-        P: Into<PathBuf>,
-    {
-        let path = path.into();
+    pub fn create_new<P: AsRef<Path>>(path: P) -> Result<Self, io::Error> {
+        let path = path.as_ref();
         // TODO: Use fs::File::create_new once MSRV is at least 1.77
         match fs::OpenOptions::new()
             .read(true)
             .write(true)
             .create_new(true)
-            .open(&path)
+            .open(path)
         {
-            Ok(file) => Ok(File::from_parts(file, path)),
+            Ok(file) => Ok(File::from_parts(file, path.to_path_buf())),
             Err(err) => Err(Error::build(err, ErrorKind::CreateFile, path)),
         }
     }
