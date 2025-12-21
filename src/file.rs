@@ -145,7 +145,11 @@ impl File {
             .set_permissions(perm)
             .map_err(|source| self.error(source, ErrorKind::SetPermissions))
     }
+}
 
+/// File time methods added in Rust 1.75.
+#[cfg(rustc_1_75)]
+impl File {
     /// Changes the timestamps of the underlying file.
     ///
     /// Wrapper for [`File::set_times`](https://doc.rust-lang.org/stable/std/fs/struct.File.html#method.set_times).
