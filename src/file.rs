@@ -1,4 +1,4 @@
-use std::fs;
+use std::fs::{self, FileTimes};
 use std::io::{self, Read, Seek, Write};
 use std::path::{Path, PathBuf};
 use std::time::SystemTime;
@@ -144,6 +144,15 @@ impl File {
         self.file
             .set_permissions(perm)
             .map_err(|source| self.error(source, ErrorKind::SetPermissions))
+    }
+
+    /// Changes the timestamps of the underlying file.
+    ///
+    /// Wrapper for [`File::set_times`](https://doc.rust-lang.org/stable/std/fs/struct.File.html#method.set_times).
+    pub fn set_times(&self, times: FileTimes) -> Result<(), io::Error> {
+        self.file
+            .set_times(times)
+            .map_err(|source| self.error(source, ErrorKind::SetTimes))
     }
 
     /// Changes the modification time of the underlying file.
