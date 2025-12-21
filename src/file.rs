@@ -1,6 +1,7 @@
 use std::fs;
 use std::io::{self, Read, Seek, Write};
 use std::path::{Path, PathBuf};
+use std::time::SystemTime;
 
 use crate::errors::{Error, ErrorKind};
 use crate::OpenOptions;
@@ -143,6 +144,15 @@ impl File {
         self.file
             .set_permissions(perm)
             .map_err(|source| self.error(source, ErrorKind::SetPermissions))
+    }
+
+    /// Changes the modification time of the underlying file.
+    ///
+    /// Wrapper for [`File::set_modified`](https://doc.rust-lang.org/stable/std/fs/struct.File.html#method.set_modified).
+    pub fn set_modified(&self, time: SystemTime) -> Result<(), io::Error> {
+        self.file
+            .set_modified(time)
+            .map_err(|source| self.error(source, ErrorKind::SetModified))
     }
 }
 
