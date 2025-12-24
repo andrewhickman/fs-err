@@ -1,8 +1,12 @@
 # fs-err Changelog
 
+## 3.2.2
+
+* Add wrappers for `File::set_modified` and `File::set_times` ([#84](https://github.com/andrewhickman/fs-err/pull/84))
+
 ## 3.2.1
 
-* Rename parameters of `symlink`, `soft_link` and `hard_link` functions to match `std` ([#83](https://github.com/andrewhickman/fs-err/pull/83)) 
+* Rename parameters of `symlink`, `soft_link` and `hard_link` functions to match `std` ([#83](https://github.com/andrewhickman/fs-err/pull/83))
 
 ## 3.2.0
 
