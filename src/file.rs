@@ -2,6 +2,10 @@ use std::fs;
 use std::io::{self, Read, Seek, Write};
 use std::path::{Path, PathBuf};
 
+// For file time methods added in Rust 1.75.
+#[cfg(rustc_1_75)]
+use std::{fs::FileTimes, time::SystemTime};
+
 use crate::errors::{Error, ErrorKind};
 use crate::OpenOptions;
 
@@ -143,6 +147,28 @@ impl File {
         self.file
             .set_permissions(perm)
             .map_err(|source| self.error(source, ErrorKind::SetPermissions))
+    }
+}
+
+/// File time methods added in Rust 1.75.
+#[cfg(rustc_1_75)]
+impl File {
+    /// Changes the timestamps of the underlying file.
+    ///
+    /// Wrapper for [`File::set_times`](https://doc.rust-lang.org/stable/std/fs/struct.File.html#method.set_times).
+    pub fn set_times(&self, times: FileTimes) -> Result<(), io::Error> {
+        self.file
+            .set_times(times)
+            .map_err(|source| self.error(source, ErrorKind::SetTimes))
+    }
+
+    /// Changes the modification time of the underlying file.
+    ///
+    /// Wrapper for [`File::set_modified`](https://doc.rust-lang.org/stable/std/fs/struct.File.html#method.set_modified).
+    pub fn set_modified(&self, time: SystemTime) -> Result<(), io::Error> {
+        self.file
+            .set_modified(time)
+            .map_err(|source| self.error(source, ErrorKind::SetModified))
     }
 }
 
