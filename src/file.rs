@@ -1,7 +1,10 @@
-use std::fs::{self, FileTimes};
+use std::fs;
 use std::io::{self, Read, Seek, Write};
 use std::path::{Path, PathBuf};
-use std::time::SystemTime;
+
+// For file time methods added in Rust 1.75.
+#[cfg(rustc_1_75)]
+use std::{fs::FileTimes, time::SystemTime};
 
 use crate::errors::{Error, ErrorKind};
 use crate::OpenOptions;
