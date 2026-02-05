@@ -45,6 +45,8 @@ pub(crate) enum ErrorKind {
     WriteAt,
     #[cfg(unix)]
     WriteAllAt,
+    #[cfg(unix)]
+    Chroot,
 }
 
 /// Contains an IO error that has a file path attached.
@@ -123,6 +125,8 @@ impl fmt::Display for Error {
             E::WriteAt => write!(formatter, "failed to write with offset to `{}`", path),
             #[cfg(unix)]
             E::WriteAllAt => write!(formatter, "failed to write all with offset to `{}`", path),
+            #[cfg(unix)]
+            E::Chroot => write!(formatter, "failed to chroot to `{}`", path),
         }?;
 
         // The `expose_original_error` feature indicates the caller should display the original error

@@ -3,8 +3,9 @@ pub mod fs {
     use std::io;
     use std::path::Path;
 
-    use crate::SourceDestError;
-    use crate::SourceDestErrorKind;
+    #[allow(unused_imports)]
+    use crate::{Error, ErrorKind};
+    use crate::{SourceDestError, SourceDestErrorKind};
 
     /// Creates a new symbolic link on the filesystem.
     ///
@@ -17,6 +18,17 @@ pub mod fs {
         std::os::unix::fs::symlink(original, link).map_err(|err| {
             SourceDestError::build(err, SourceDestErrorKind::Symlink, link, original)
         })
+    }
+
+    /// Change the root directory of the current process to the specified path.
+    ///
+    /// This typically requires privileges, such as root or a specific capability.
+    ///
+    /// Wrapper for [`std::os::unix::fs::chroot`](https://doc.rust-lang.org/std/os/unix/fs/fn.chroot.html)
+    #[cfg(rustc_1_56)]
+    pub fn chroot<P: AsRef<Path>>(path: P) -> io::Result<()> {
+        let path = path.as_ref();
+        std::os::unix::fs::chroot(path).map_err(|err| Error::build(err, ErrorKind::Chroot, path))
     }
 
     /// Wrapper for [`std::os::unix::fs::FileExt`](https://doc.rust-lang.org/std/os/unix/fs/trait.FileExt.html).
