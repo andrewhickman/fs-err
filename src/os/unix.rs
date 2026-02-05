@@ -20,6 +20,31 @@ pub mod fs {
         })
     }
 
+    /// Change the owner and group of the specified path.
+    ///
+    /// Specifying either the uid or gid as `None` will leave it unchanged.
+    ///
+    /// Wrapper for [`std::os::unix::fs::chown`](https://doc.rust-lang.org/std/os/unix/fs/fn.chown.html)
+    #[cfg(rustc_1_73)]
+    pub fn chown<P: AsRef<Path>>(path: P, uid: Option<u32>, gid: Option<u32>) -> io::Result<()> {
+        let path = path.as_ref();
+        std::os::unix::fs::chown(path, uid, gid)
+            .map_err(|err| Error::build(err, ErrorKind::Chown, path))
+    }
+
+    /// Change the owner and group of the specified path, without dereferencing symbolic links.
+    ///
+    /// Identical to [`chown`], except that if called on a symbolic link, this will change the owner
+    /// and group of the link itself rather than the owner and group of the link target.
+    ///
+    /// Wrapper for [`std::os::unix::fs::lchown`](https://doc.rust-lang.org/std/os/unix/fs/fn.lchown.html)
+    #[cfg(rustc_1_73)]
+    pub fn lchown<P: AsRef<Path>>(path: P, uid: Option<u32>, gid: Option<u32>) -> io::Result<()> {
+        let path = path.as_ref();
+        std::os::unix::fs::lchown(path, uid, gid)
+            .map_err(|err| Error::build(err, ErrorKind::Lchown, path))
+    }
+
     /// Change the root directory of the current process to the specified path.
     ///
     /// This typically requires privileges, such as root or a specific capability.

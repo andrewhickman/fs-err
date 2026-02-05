@@ -46,6 +46,10 @@ pub(crate) enum ErrorKind {
     #[cfg(unix)]
     WriteAllAt,
     #[cfg(unix)]
+    Chown,
+    #[cfg(unix)]
+    Lchown,
+    #[cfg(unix)]
     Chroot,
 }
 
@@ -125,6 +129,10 @@ impl fmt::Display for Error {
             E::WriteAt => write!(formatter, "failed to write with offset to `{}`", path),
             #[cfg(unix)]
             E::WriteAllAt => write!(formatter, "failed to write all with offset to `{}`", path),
+            #[cfg(unix)]
+            E::Chown => write!(formatter, "failed to chown `{}`", path),
+            #[cfg(unix)]
+            E::Lchown => write!(formatter, "failed to lchown `{}`", path),
             #[cfg(unix)]
             E::Chroot => write!(formatter, "failed to chroot to `{}`", path),
         }?;
