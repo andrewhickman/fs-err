@@ -40,7 +40,11 @@ pub(crate) enum ErrorKind {
     #[cfg(unix)]
     ReadAt,
     #[cfg(unix)]
+    ReadExactAt,
+    #[cfg(unix)]
     WriteAt,
+    #[cfg(unix)]
+    WriteAllAt,
 }
 
 /// Contains an IO error that has a file path attached.
@@ -108,7 +112,17 @@ impl fmt::Display for Error {
             #[cfg(unix)]
             E::ReadAt => write!(formatter, "failed to read with offset from `{}`", path),
             #[cfg(unix)]
+            E::ReadExactAt => {
+                write!(
+                    formatter,
+                    "failed to read exactly with offset from `{}`",
+                    path
+                )
+            }
+            #[cfg(unix)]
             E::WriteAt => write!(formatter, "failed to write with offset to `{}`", path),
+            #[cfg(unix)]
+            E::WriteAllAt => write!(formatter, "failed to write all with offset to `{}`", path),
         }?;
 
         // The `expose_original_error` feature indicates the caller should display the original error

@@ -26,8 +26,12 @@ pub mod fs {
     pub trait FileExt: crate::Sealed {
         /// Wrapper for [`FileExt::read_at`](https://doc.rust-lang.org/std/os/unix/fs/trait.FileExt.html#tymethod.read_at)
         fn read_at(&self, buf: &mut [u8], offset: u64) -> io::Result<usize>;
+        /// Wrapper for [`FileExt::read_exact_at`](https://doc.rust-lang.org/std/os/unix/fs/trait.FileExt.html#tymethod.read_exact_at)
+        fn read_exact_at(&self, buf: &mut [u8], offset: u64) -> io::Result<()>;
         /// Wrapper for [`FileExt::write_at`](https://doc.rust-lang.org/std/os/unix/fs/trait.FileExt.html#tymethod.write_at)
         fn write_at(&self, buf: &[u8], offset: u64) -> io::Result<usize>;
+        /// Wrapper for [`FileExt::write_exact_at`](https://doc.rust-lang.org/std/os/unix/fs/trait.FileExt.html#tymethod.write_exact_at)
+        fn write_all_at(&self, buf: &[u8], offset: u64) -> io::Result<()>;
     }
 
     /// Wrapper for [`std::os::unix::fs::OpenOptionsExt`](https://doc.rust-lang.org/std/os/unix/fs/trait.OpenOptionsExt.html)
