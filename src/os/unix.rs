@@ -67,7 +67,7 @@ pub mod fs {
         fn read_exact_at(&self, buf: &mut [u8], offset: u64) -> io::Result<()>;
         /// Wrapper for [`std::os::unix::fs::FileExt::write_at`].
         fn write_at(&self, buf: &[u8], offset: u64) -> io::Result<usize>;
-        /// Wrapper for [`FileExt::write_exact_at`](https://doc.rust-lang.org/std/os/unix/fs/trait.FileExt.html#tymethod.write_exact_at)
+        /// Wrapper for [`std::os::unix::fs::FileExt::write_all_at`].
         fn write_all_at(&self, buf: &[u8], offset: u64) -> io::Result<()>;
     }
 
