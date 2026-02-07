@@ -7,7 +7,7 @@ edition = "2018"
 repository = "https://github.com/andrewhickman/fs-err"
 documentation = "https://docs.rs/fs-err"
 categories = ["command-line-interface", "filesystem"]
-license = "MIT/Apache-2.0"
+license = "MIT OR Apache-2.0"
 readme = "README.md"
 exclude = [".github", ".gitignore", "README.tpl"]
 
