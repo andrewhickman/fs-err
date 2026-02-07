@@ -1,4 +1,4 @@
-/// Unix-specific extensions to wrappers in `fs_err` for `std::fs` types.
+/// Unix-specific extensions to wrappers in fs-err for [`std::fs`] types.
 pub mod fs {
     use std::io;
     use std::path::Path;
@@ -11,7 +11,7 @@ pub mod fs {
     ///
     /// The `link` path will be a symbolic link pointing to the `original` path.
     ///
-    /// Wrapper for [`std::os::unix::fs::symlink`](https://doc.rust-lang.org/std/os/unix/fs/fn.symlink.html)
+    /// Wrapper for [`std::os::unix::fs::symlink`].
     pub fn symlink<P: AsRef<Path>, Q: AsRef<Path>>(original: P, link: Q) -> io::Result<()> {
         let original = original.as_ref();
         let link = link.as_ref();
@@ -24,7 +24,7 @@ pub mod fs {
     ///
     /// Specifying either the uid or gid as `None` will leave it unchanged.
     ///
-    /// Wrapper for [`std::os::unix::fs::chown`](https://doc.rust-lang.org/std/os/unix/fs/fn.chown.html)
+    /// Wrapper for [`std::os::unix::fs::chown`]
     #[cfg(rustc_1_73)]
     pub fn chown<P: AsRef<Path>>(path: P, uid: Option<u32>, gid: Option<u32>) -> io::Result<()> {
         let path = path.as_ref();
@@ -37,7 +37,7 @@ pub mod fs {
     /// Identical to [`chown`], except that if called on a symbolic link, this will change the owner
     /// and group of the link itself rather than the owner and group of the link target.
     ///
-    /// Wrapper for [`std::os::unix::fs::lchown`](https://doc.rust-lang.org/std/os/unix/fs/fn.lchown.html)
+    /// Wrapper for [`std::os::unix::fs::lchown`]
     #[cfg(rustc_1_73)]
     pub fn lchown<P: AsRef<Path>>(path: P, uid: Option<u32>, gid: Option<u32>) -> io::Result<()> {
         let path = path.as_ref();
@@ -49,36 +49,36 @@ pub mod fs {
     ///
     /// This typically requires privileges, such as root or a specific capability.
     ///
-    /// Wrapper for [`std::os::unix::fs::chroot`](https://doc.rust-lang.org/std/os/unix/fs/fn.chroot.html)
+    /// Wrapper for [`std::os::unix::fs::chroot`]
     #[cfg(rustc_1_56)]
     pub fn chroot<P: AsRef<Path>>(path: P) -> io::Result<()> {
         let path = path.as_ref();
         std::os::unix::fs::chroot(path).map_err(|err| Error::build(err, ErrorKind::Chroot, path))
     }
 
-    /// Wrapper for [`std::os::unix::fs::FileExt`](https://doc.rust-lang.org/std/os/unix/fs/trait.FileExt.html).
+    /// Wrapper for [`std::os::unix::fs::FileExt`].
     ///
     /// The std traits might be extended in the future (See issue [#49961](https://github.com/rust-lang/rust/issues/49961#issuecomment-382751777)).
     /// This trait is sealed and can not be implemented by other crates.
     pub trait FileExt: crate::Sealed {
-        /// Wrapper for [`FileExt::read_at`](https://doc.rust-lang.org/std/os/unix/fs/trait.FileExt.html#tymethod.read_at)
+        /// Wrapper for [`std::os::unix::fs::FileExt::read_at`].
         fn read_at(&self, buf: &mut [u8], offset: u64) -> io::Result<usize>;
-        /// Wrapper for [`FileExt::read_exact_at`](https://doc.rust-lang.org/std/os/unix/fs/trait.FileExt.html#tymethod.read_exact_at)
+        /// Wrapper for [`std::os::unix::fs::FileExt::read_exact_at`].
         fn read_exact_at(&self, buf: &mut [u8], offset: u64) -> io::Result<()>;
-        /// Wrapper for [`FileExt::write_at`](https://doc.rust-lang.org/std/os/unix/fs/trait.FileExt.html#tymethod.write_at)
+        /// Wrapper for [`std::os::unix::fs::FileExt::write_at`].
         fn write_at(&self, buf: &[u8], offset: u64) -> io::Result<usize>;
         /// Wrapper for [`FileExt::write_exact_at`](https://doc.rust-lang.org/std/os/unix/fs/trait.FileExt.html#tymethod.write_exact_at)
         fn write_all_at(&self, buf: &[u8], offset: u64) -> io::Result<()>;
     }
 
-    /// Wrapper for [`std::os::unix::fs::OpenOptionsExt`](https://doc.rust-lang.org/std/os/unix/fs/trait.OpenOptionsExt.html)
+    /// Wrapper for [`std::os::unix::fs::OpenOptionsExt`].
     ///
     /// The std traits might be extended in the future (See issue [#49961](https://github.com/rust-lang/rust/issues/49961#issuecomment-382751777)).
     /// This trait is sealed and can not be implemented by other crates.
     pub trait OpenOptionsExt: crate::Sealed {
-        /// Wrapper for [`OpenOptionsExt::mode`](https://doc.rust-lang.org/std/os/unix/fs/trait.OpenOptionsExt.html#tymethod.mode)
+        /// Wrapper for [`std::os::unix::fs::OpenOptionsExt::mode`].
         fn mode(&mut self, mode: u32) -> &mut Self;
-        /// Wrapper for [`OpenOptionsExt::custom_flags`](https://doc.rust-lang.org/std/os/unix/fs/trait.OpenOptionsExt.html#tymethod.custom_flags)
+        /// Wrapper for [`std::os::unix::fs::OpenOptionsExt::custom_flags`].
         fn custom_flags(&mut self, flags: i32) -> &mut Self;
     }
 }
