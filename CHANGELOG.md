@@ -1,5 +1,16 @@
 # fs-err Changelog
 
+## 3.3.2
+
+* Cleanup rustdoc links to make them clickable in rust-analyzer ([#88](https://github.com/andrewhickman/fs-err/pull/88))
+* Add wrappers for several `os::unix::fs` functions ([#87](https://github.com/andrewhickman/fs-err/pull/87)):
+  * `std::os::unix::fs::FileExt::read_exact_at`
+  * `std::os::unix::fs::FileExt::write_all_at`
+  * `std::os::unix::fs::chroot`
+  * `std::os::unix::fs::chown`
+  * `std::os::unix::fs::lchown`
+* Replace '/' operator in SPDX license expression with 'OR' for readability ([#86](https://github.com/andrewhickman/fs-err/pull/86))
+
 ## 3.2.2
 
 * Add wrappers for `File::set_modified` and `File::set_times` ([#84](https://github.com/andrewhickman/fs-err/pull/84))
