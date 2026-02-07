@@ -391,10 +391,20 @@ mod unix {
                 .read_at(buf, offset)
                 .map_err(|err| self.error(err, ErrorKind::ReadAt))
         }
+        fn read_exact_at(&self, buf: &mut [u8], offset: u64) -> io::Result<()> {
+            self.file()
+                .read_exact_at(buf, offset)
+                .map_err(|err| self.error(err, ErrorKind::ReadExactAt))
+        }
         fn write_at(&self, buf: &[u8], offset: u64) -> io::Result<usize> {
             self.file()
                 .write_at(buf, offset)
                 .map_err(|err| self.error(err, ErrorKind::WriteAt))
+        }
+        fn write_all_at(&self, buf: &[u8], offset: u64) -> io::Result<()> {
+            self.file()
+                .write_all_at(buf, offset)
+                .map_err(|err| self.error(err, ErrorKind::WriteAllAt))
         }
     }
 
