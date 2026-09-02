@@ -13,7 +13,7 @@ exclude = [".github", ".gitignore", "README.tpl"]
 
 [dependencies]
 tokio = { version = "1.21", optional = true, default-features = false, features = ["fs"] }
-path_facts = { version = "0.2.0", optional = true }
+path_facts = { version = "0.3.0", optional = true }
 
 [build-dependencies]
 autocfg = "1"
