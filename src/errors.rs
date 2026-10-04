@@ -216,30 +216,53 @@ impl fmt::Display for SourceDestError {
         let to = self.to_path.display();
         match self.kind {
             SourceDestErrorKind::Copy => {
-                write!(formatter, "failed to copy file from {} to {}", from, to)
+                write!(formatter, "failed to copy file from `{}` to `{}`", from, to)
             }
             SourceDestErrorKind::HardLink => {
-                write!(formatter, "failed to hardlink file from {} to {}", from, to)
+                write!(
+                    formatter,
+                    "failed to hardlink file from `{}` to `{}`",
+                    from, to
+                )
             }
             SourceDestErrorKind::Rename => {
-                write!(formatter, "failed to rename file from {} to {}", from, to)
+                write!(
+                    formatter,
+                    "failed to rename file from `{}` to `{}`",
+                    from, to
+                )
             }
             SourceDestErrorKind::SoftLink => {
-                write!(formatter, "failed to softlink file from {} to {}", from, to)
+                write!(
+                    formatter,
+                    "failed to softlink file from `{}` to `{}`",
+                    from, to
+                )
             }
-
             #[cfg(unix)]
             SourceDestErrorKind::Symlink => {
-                write!(formatter, "failed to symlink file from {} to {}", from, to)
+                write!(
+                    formatter,
+                    "failed to symlink file from `{}` to `{}`",
+                    from, to
+                )
             }
 
             #[cfg(windows)]
             SourceDestErrorKind::SymlinkFile => {
-                write!(formatter, "failed to symlink file from {} to {}", from, to)
+                write!(
+                    formatter,
+                    "failed to symlink file from `{}` to `{}`",
+                    from, to
+                )
             }
             #[cfg(windows)]
             SourceDestErrorKind::SymlinkDir => {
-                write!(formatter, "failed to symlink dir from {} to {}", from, to)
+                write!(
+                    formatter,
+                    "failed to symlink dir from `{}` to `{}`",
+                    from, to
+                )
             }
         }?;
 
