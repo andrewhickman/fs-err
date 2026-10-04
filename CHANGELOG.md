@@ -1,5 +1,6 @@
 # fs-err Changelog
 
+* Reword errors for `metadata` and `symlink_metadata` ([#95](https://github.com/andrewhickman/fs-err/pull/95))
 * Error messages from functions with two paths now wrap those paths in backticks. Previously, single-path errors (such as `read_to_string`) wrapped a path in backticks, but functions using two paths, such as `rename`, did not. Now all paths shown are wrapped in backticks. ([#94](https://github.com/andrewhickman/fs-err/pull/94))
 
 ## 3.3.1

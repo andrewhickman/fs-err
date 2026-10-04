@@ -89,7 +89,7 @@ impl fmt::Display for Error {
             E::CreateDir => write!(formatter, "failed to create directory `{}`", path),
             E::SyncFile => write!(formatter, "failed to sync file `{}`", path),
             E::SetLen => write!(formatter, "failed to set length of file `{}`", path),
-            E::Metadata => write!(formatter, "failed to query metadata of file `{}`", path),
+            E::Metadata => write!(formatter, "failed to query resolved metadata `{}`", path),
             E::Clone => write!(formatter, "failed to clone handle for file `{}`", path),
             E::SetPermissions => write!(formatter, "failed to set permissions for file `{}`", path),
             E::SetTimes => write!(formatter, "failed to set times for file `{}`", path),
@@ -104,7 +104,7 @@ impl fmt::Display for Error {
             E::Canonicalize => write!(formatter, "failed to canonicalize path `{}`", path),
             E::ReadLink => write!(formatter, "failed to read symbolic link `{}`", path),
             E::SymlinkMetadata => {
-                write!(formatter, "failed to query metadata of symlink `{}`", path)
+                write!(formatter, "failed to query raw metadata `{}`", path)
             }
             E::FileExists => write!(formatter, "failed to check file existence `{}`", path),
             E::Lock => write!(formatter, "failed to lock `{}`", path),
