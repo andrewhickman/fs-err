@@ -313,8 +313,8 @@ pub(crate) fn path_facts(path: &std::path::Path) -> String {
     format!(
         "
 
-Path {}",
-        PathFacts::new(path)
+{}",
+        PathFacts::with_prefix("Path", path)
     )
 }
 
