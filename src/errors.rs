@@ -1,5 +1,5 @@
 #[cfg(feature = "debug")]
-use path_facts::PathFacts;
+use path_facts::{FromTo, PathFacts};
 use std::error::Error as StdError;
 use std::fmt;
 use std::io;
@@ -293,10 +293,8 @@ pub(crate) fn path_facts_source_dest(from: &std::path::Path, to: &std::path::Pat
     format!(
         "
 
-From path {}
-To path {}",
-        PathFacts::new(from),
-        PathFacts::new(to)
+{}",
+        FromTo::new(from, to)
     )
 }
 
@@ -315,8 +313,8 @@ pub(crate) fn path_facts(path: &std::path::Path) -> String {
     format!(
         "
 
-Path {}",
-        PathFacts::new(path)
+{}",
+        PathFacts::with_prefix("Path", path)
     )
 }
 
